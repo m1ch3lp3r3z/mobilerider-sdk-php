@@ -11,5 +11,10 @@ namespace Mr\Sdk;
 
 class Client extends \GuzzleHttp\Client
 {
+    public function getArray()
+    {
+        $response = call_user_func_array([$this, 'get'], func_get_args());
 
+        return json_decode($response->getBody(), true);
+    }
 }
