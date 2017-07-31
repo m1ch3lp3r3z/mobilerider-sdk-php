@@ -11,55 +11,85 @@ namespace Mr\Sdk;
 
 class Factory
 {
-    protected static $definitions = [];
-    protected static $instances = [];
+    protected $definitions;
+    protected $instances;
+
+    public function __construct(array $definitions = [], array $instances = [])
+    {
+        $this->definitions = $definitions;
+        $this->instances = ['Factory' => $this] + $instances;
+    }
 
     /**
      * @param $instance
      * @param null $name
      */
-    public static function register($instance, $name = null)
+    public function register($instance, $name = null)
     {
         if (is_null($name)) {
             $name = get_class($instance);
         }
 
-        if (static::has($name)) {
+        if ($this->has($name)) {
             throw new \RuntimeException('Duplicated name');
         }
 
-        static::$instances[$name] = $instance;
+        $this->instances[$name] = $instance;
     }
 
-    public static function define($name, $class, array $dependencies)
+    public function replace($instance, $name)
     {
-        static::$definitions[$name] = [$class, $dependencies];
-    }
-
-    public static function has($name)
-    {
-        return array_key_exists($name, static::$instances);
-    }
-
-    protected static function create($name, array $args)
-    {
-        if (!isset(static::$definitions[$name])) {
-            return new $name();
+        if (!$this->has($name)) {
+            throw new \RuntimeException('Instance not found, use register method instead');
         }
 
-        list($class, $dependencies) = static::$definitions[$name];
+        $this->instances[$name] = $instance;
+    }
+
+    public function define($name, $class, array $dependencies)
+    {
+        $this->definitions[$name] = [$class, $dependencies];
+    }
+
+    public function has($name)
+    {
+        return array_key_exists($name, $this->instances);
+    }
+
+    public function create($name, array $args, $strict = false)
+    {
+        if (!isset($this->definitions[$name])) {
+            throw new \RuntimeException("Definition not found for $name");
+        }
+
+        list($class, $dependencies) = $this->definitions[$name];
         $finalArgs = [];
 
         foreach ($dependencies as $argName => $argType) {
-            if (array_key_exists($argName, $args)) {
+            // Check if this argument was provided now
+            if (empty($argType) || array_key_exists($argName, $args)) {
                 $finalArgs[] = $args[$argName];
+                continue;
+            }
+
+            if (is_array($argType)) {
+                $finalArgs[] = $argType['value'];
+                continue;
+            }
+
+            if (!is_string($argType)) {
+                throw new \RuntimeException('Argument type not supported');
             }
 
             if ($name == $argType) {
                 throw new \RuntimeException('Cyclic dependency detected');
             }
 
-            $finalArgs[] = static::get($argType);
+            if ($strict) {
+                $finalArgs[] = $this->get($argType);
+            } else {
+                $finalArgs[] = $this->resolve($argType);
+            }
         }
 
         $class = new \ReflectionClass($class);
@@ -67,22 +97,35 @@ class Factory
         return $class->newInstanceArgs($finalArgs);
     }
 
-    public static function get($name)
+    public function get($name, $strict = true)
     {
-        if (!static::has($name)) {
-            return null;
+        if (!$this->has($name)) {
+            if ($strict) {
+                throw new \RuntimeException('Instance not found for: ' . $name);
+            } else {
+                return null;
+            }
         }
 
-        return static::$instances[$name];
+        return $this->instances[$name];
     }
 
-    public static function resolve($name, array $args = [])
+    public function resolve($name, array $args = [])
     {
-        if (!static::has($name)) {
-            $instance = static::create($name, $args);
-            static::register($instance, $name);
+        if (!$this->has($name)) {
+            $instance = $this->create($name, $args);
+            $this->register($instance, $name);
         }
 
-        return static::get($name);
+        return $this->get($name);
+    }
+
+    public function clear($name = null)
+    {
+        if (is_null($name)) {
+            $this->instances = [];
+        } else {
+            unset($this->instances[$name]);
+        }
     }
 }

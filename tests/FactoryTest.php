@@ -1,41 +1,53 @@
 <?php
 
-use Mr\Sdk\Client;
-use Mr\Sdk\Repository;
 use PHPUnit\Framework\TestCase;
 
+use Mr\Sdk\Client;
+use Mr\Sdk\Repository;
 use \Mr\Sdk\Factory;
 
 class FactoryTest extends TestCase
 {
+    /**
+     * @var Factory
+     */
+    protected $instance;
+
+    public function setUp()
+    {
+        $this->instance = new Factory();
+    }
+
     public function testRegister()
     {
         $instance = new stdClass();
 
-        Factory::register($instance, 'stdClass');
+        $this->instance->register($instance, 'stdClass');
 
-        $this->assertEquals($instance, Factory::get('stdClass'));
+        $this->assertEquals($instance, $this->instance->get('stdClass'));
     }
 
     public function testRegisterClassInstanceNoName()
     {
         $instance = new \DateTime();
 
-        Factory::register($instance);
+        $this->instance->register($instance);
 
-        $this->assertEquals($instance, Factory::get('DateTime'));
+        $this->assertEquals($instance, $this->instance->get('DateTime'));
     }
 
     public function testDefinitionAndDependencyResolving()
     {
-        Factory::register(new Client(), 'Client');
+        $this->assertNull($this->instance->get('Client', false));
 
-        Factory::define('Repository', Repository::class, [
-            'client' => 'Client',
-            'entity' => 'string'
+        $this->instance->register(new Client(), 'Client');
+
+        $this->instance->define('Repository', Repository::class, [
+            'factory' => 'Factory',
+            'entity' => null
             ]
         );
 
-        $this->assertInstanceOf(Repository::class, Factory::resolve('Repository', ['entity' => 'Media']));
+        $this->assertInstanceOf(Repository::class, $this->instance->resolve('Repository', ['entity' => 'Media']));
     }
 }
