@@ -38,11 +38,26 @@ class Repository
         return strtolower(str_replace(' ', '-', $entity));
     }
 
+    protected function parse(array $data)
+    {
+        $meta = $data['meta'];
+
+        if (isset($data['object'])) {
+            $data = $data['object'];
+        } else {
+            $data = $data['objects'];
+        }
+
+        return [$data, $meta];
+    }
+
     public function get($id, $asArray = false)
     {
         $resource = $this->sanitize($this->entity);
 
         $data = $this->client->getArray("$resource/$id");
+
+        list($data, $meta) = $this->parse($data);
 
         return $asArray ? $data : $this->create($data);
     }

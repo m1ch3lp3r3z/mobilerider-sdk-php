@@ -57,7 +57,18 @@ class RepositoryTest extends TestCase
 
     public function testGet()
     {
-        $data = ['id' => 123, 'title' => 'Testing media'];
+        $data = [
+            'meta' => [
+                'request' =>
+                    [
+                        'method' => "GET"
+                    ]
+            ],
+            'object' => [
+                'id' => 123,
+                'title' => 'Testing media'
+            ]
+        ];
 
         $this->factory->replace(new MockClient([
             'responses' => [
@@ -81,7 +92,7 @@ class RepositoryTest extends TestCase
 
         $result = $instance->get(123, true);
 
-        $this->assertEquals($data, $result);
+        $this->assertEquals($data['object'], $result);
 
         $result = $instance->get(123);
 
