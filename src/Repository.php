@@ -33,9 +33,16 @@ class Repository
         ]);
     }
 
+    protected function sanitize($entity)
+    {
+        return strtolower(str_replace(' ', '-', $entity));
+    }
+
     public function get($id, $asArray = false)
     {
-        $data = $this->client->getArray("$this->entity/$id");
+        $resource = $this->sanitize($this->entity);
+
+        $data = $this->client->getArray("$resource/$id");
 
         return $asArray ? $data : $this->create($data);
     }
