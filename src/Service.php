@@ -25,7 +25,13 @@ class Service
             'MediaRepository' => [Repository::class, [
                 'factory' => 'Factory',
                 'entity' => ['value' => 'Media']
-            ]]
+            ]],
+            'MediaModel' => [
+                Model::class, [
+                    'repository' => 'MediaRepository',
+                    'data' => null
+                ]
+            ]
         ];
 
         $instances = [
