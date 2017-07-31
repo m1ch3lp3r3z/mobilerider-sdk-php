@@ -13,7 +13,10 @@
     ],
     "minimum-stability": "stable",
     "autoload": {
-        "psr-4": {"Mr\\Sdk\\": "src/"}
+        "psr-4": {
+            "Mr\\Sdk\\": "src/",
+            "Mr\\SdkTest\\": "tests/"
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "^6.2"
