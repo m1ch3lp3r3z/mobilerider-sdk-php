@@ -1,6 +1,7 @@
 {
     "name": "mobilerider/mobilerider-php-sdk",
     "type": "library",
+    "version": "0.0.1",
     "require": {
         "php": "^7.1",
         "guzzlehttp/guzzle": "~6.0"
