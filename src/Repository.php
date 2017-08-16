@@ -13,6 +13,9 @@ class Repository
 {
     protected $entity;
     protected $factory;
+    /**
+     * @var Client
+     */
     protected $client;
 
     public function __construct(Factory $factory, $entity)
@@ -60,6 +63,30 @@ class Repository
         list($data, $meta) = $this->parse($data);
 
         return $asArray ? $data : $this->create($data);
+    }
+
+    public function findOne(array $filters, $asArray = false)
+    {
+        $result = $this->find($filters, ['limit' => 1], $asArray);
+
+        return count($result) > 0 ? $result[0] : null;
+    }
+
+    public function find(array $filters, array $params = [], $asArray = false)
+    {
+        $resource = $this->sanitize($this->entity);
+
+        $data = $this->client->getArray($resource);
+
+        list($data, $meta) = $this->parse($data);
+
+        if ($asArray) {
+            return $data;
+        }
+
+        return array_map(function($item) {
+            return $this->create($item);
+        }, $data);
     }
 
     public function getEntity()

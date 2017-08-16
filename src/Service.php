@@ -19,7 +19,7 @@ class Service
      * @param $appSecret
      * @param array $options
      */
-    public function __construct($appId, $appSecret, $options = array())
+    public function __construct($appId, $appSecret, $options = [])
     {
         $definitions = [
             'MediaRepository' => [Repository::class, [
@@ -95,11 +95,18 @@ class Service
      * @param array $filters
      * @return ApiObjectCollection
      */
-    public function find($entity, $filters = array())
+    public function find($entity, $filters = [])
     {
         $repo = $this->getRepository($entity);
 
-        return $repo->getAll($filters);
+        return $repo->find($filters);
+    }
+
+    public function findOne($entity, $filters = [])
+    {
+        $repo = $this->getRepository($entity);
+
+        return $repo->findOne($filters);
     }
 
     // Helpers
@@ -120,9 +127,14 @@ class Service
      * @param array $filters
      * @return ApiObjectCollection
      */
-    public function findMedias($filters = array())
+    public function findMedias($filters = [])
     {
-        return $this->getAll('Media', $filters);
+        return $this->find('Media', $filters);
+    }
+
+    public function findOneMedia($filters = [])
+    {
+        return $this->findOne('Media', $filters);
     }
 
     /**
@@ -131,7 +143,7 @@ class Service
      * @param array $filters
      * @return ApiObjectCollection
      */
-    public function findChannels($filters = array())
+    public function findChannels($filters = [])
     {
         return $this->getAll('Channel', $filters);
     }
