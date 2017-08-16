@@ -1,4 +1,7 @@
 vendor/
+coverage/
 clover.xml
 
 .idea
+
+main.php
