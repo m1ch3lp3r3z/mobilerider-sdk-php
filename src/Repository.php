@@ -76,7 +76,9 @@ class Repository
     {
         $resource = $this->sanitize($this->entity);
 
-        $data = $this->client->getArray($resource);
+        $data = $this->client->getArray($resource, [
+            'query' => $filters + $params
+        ]);
 
         list($data, $meta) = $this->parse($data);
 
