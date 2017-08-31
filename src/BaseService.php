@@ -1,13 +1,16 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: michel
+ * Date: 8/30/17
+ * Time: 2:19 PM
+ */
 
 namespace Mr\Sdk;
 
 
-class Service
+abstract class BaseService
 {
-    const API_BASE_URL = 'https://api.mobilerider.com/api/';
-    const APP_VENDOR_HEADER = 'X-Vendor-App-Id';
-
     /**
      * @var Factory
      */
@@ -15,38 +18,38 @@ class Service
 
     /**
      * Service constructor.
-     * @param $appId
-     * @param $appSecret
+     * @param $token
      * @param array $options
      */
-    public function __construct($appId, $appSecret, $options = [])
+    public function __construct($token, $options = [])
     {
-        $definitions = [
-            'MediaRepository' => [Repository::class, [
-                'factory' => 'Factory',
-                'entity' => ['value' => 'Media']
-            ]],
-            'MediaModel' => [
-                Model::class, [
-                    'repository' => 'MediaRepository',
-                    'data' => null
-                ]
-            ]
-        ];
+        $definitions = [] + $this->getDefinitions();
 
         $instances = [
             'Client' => new Client(
                 [
-                    'base_uri' => self::API_BASE_URL,
-                    'auth' => [$appId, $appSecret],
+                    'base_uri' => $this->getBaseUrl(),
                     'headers' => [
+                        'Authorization' => "Bearer $token",
                         'Content-Type' => 'application/json'
                     ]
                 ] + ($options['http'] ?? [])
             )
-        ];
+        ] + $this->getInstances();
 
         $this->factory = new Factory($definitions, $instances);
+    }
+
+    abstract protected function getBaseUrl();
+
+    protected function getDefinitions()
+    {
+        return [];
+    }
+
+    protected function getInstances()
+    {
+        return [];
     }
 
     public function getClient()
@@ -65,7 +68,7 @@ class Service
      *
      * @param $entity string
      * @param $data object | array
-     * @return Mr\Api\Model\ApiObject
+     * @return \Mr\Sdk\Model
      */
     public function create($entity, $data = null)
     {
@@ -79,7 +82,7 @@ class Service
      *
      * @param $entity string
      * @param $id mixed
-     * @return Mr\Api\Model\ApiObject
+     * @return \Mr\Sdk\Model
      */
     public function get($entity, $id)
     {
@@ -93,7 +96,7 @@ class Service
      *
      * @param string $entity
      * @param array $filters
-     * @return ApiObjectCollection
+     * @return array
      */
     public function find($entity, $filters = [])
     {
@@ -107,44 +110,5 @@ class Service
         $repo = $this->getRepository($entity);
 
         return $repo->findOne($filters);
-    }
-
-    // Helpers
-
-    public function getMedia($id)
-    {
-        return $this->get('Media', $id);
-    }
-
-    public function getChannel($id)
-    {
-        return $this->get('Channel', $id);
-    }
-
-    /**
-     * Returns all media objects
-     *
-     * @param array $filters
-     * @return ApiObjectCollection
-     */
-    public function findMedias($filters = [])
-    {
-        return $this->find('Media', $filters);
-    }
-
-    public function findOneMedia($filters = [])
-    {
-        return $this->findOne('Media', $filters);
-    }
-
-    /**
-     * Returns all channel objects
-     *
-     * @param array $filters
-     * @return ApiObjectCollection
-     */
-    public function findChannels($filters = [])
-    {
-        return $this->getAll('Channel', $filters);
     }
 }

@@ -25,13 +25,18 @@ class Repository
         $this->client = $factory->get('Client');
     }
 
+    public function getModel()
+    {
+        return "{$this->entity}Model";
+    }
+
     /**
      * @param array $data
      * @return object
      */
     public function create(array $data = [])
     {
-        return $this->factory->create('MediaModel', [
+        return $this->factory->create($this->getModel(), [
             'data' => $data
         ]);
     }
@@ -45,7 +50,9 @@ class Repository
     {
         $meta = $data['meta'];
 
-        if (isset($data['object'])) {
+        if (isset($data['data'])) {
+            $data = $data['data'];
+        } else if (isset($data['object'])) {
             $data = $data['object'];
         } else {
             $data = $data['objects'];

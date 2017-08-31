@@ -2,33 +2,31 @@
 
 use PHPUnit\Framework\TestCase;
 
-use Mr\Sdk\Service;
+use Mr\Sdk\Sdk;
 use Mr\Sdk\Factory;
 use Mr\Sdk\Client;
 use Mr\Sdk\Repository;
 
 
-class ServiceTest extends TestCase
+class MediaServiceTest extends TestCase
 {
     /**
-     * @var Service
+     * @var Sdk
      */
     protected $instance;
 
     public function setUp()
     {
-        $this->instance = new Service('', '', []);
+        Sdk::setToken('123');
+
+        $this->instance = Sdk::getService('media');
     }
 
     public function testConstruct()
     {
-        $instance = new Service('test', '123', []);
-        $client = $instance->getClient();
+        $client = $this->instance->getClient();
 
         $this->assertInstanceOf(Client::class, $client);
-
-        $instance = new Service('another test', '12345', []);
-        $this->assertNotEquals($client, $instance->getClient());
     }
 
     public function testGetRepository()
