@@ -1,83 +1,60 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michel
- * Date: 8/30/17
- * Time: 12:21 PM
- */
 
 namespace Mr\Sdk\Service;
 
-use Mr\Sdk\BaseService;
-use Mr\Sdk\Model;
-use Mr\Sdk\Repository;
+use Mr\Sdk\Model\Account\User;
+use Mr\Sdk\Repository\Account\UserRepository;
 
 class AccountService extends BaseService
 {
-    const API_BASE_URL = 'http://localhost:3001/api/v1/';
+    const BASE_URL = 'http://localhost:8002/api/v1/';
 
     protected function getBaseUrl()
     {
-        return self::API_BASE_URL;
-    }
-
-    public function getDefinitions()
-    {
-        return [
-            'UserRepository' => [
-                Repository::class, [
-                'factory' => 'Factory',
-                'entity' => ['value' => 'User']
-            ]],
-            'UserModel' => [
-                Model::class, [
-                    'repository' => 'UserRepository',
-                    'data' => null
-                ]
-            ]
-        ];
-    }
-
-    public function getUser($id)
-    {
-        return $this->get('User', $id);
-    }
-
-    public function getChannel($id)
-    {
-        return $this->get('Channel', $id);
+        return self::BASE_URL;
     }
 
     /**
-     * Returns all media objects
+     * Returns user by id
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getUser($id)
+    {
+        return $this->_get(UserRepository::class)->get($id);
+    }
+
+    /**
+     * Returns all users matching filters
      *
      * @param array $filters
      * @return array
      */
-    public function findUsers($filters = [])
+    public function findUsers(array $filters = [])
     {
-        return $this->find('User', $filters);
+        return $this->_get(UserRepository::class)->find($filters);
     }
 
     /**
+     * Returns first user matching filters
+     *
      * @param array $filters
      * @return mixed
      */
-    public function findOneUser($filters = [])
+    public function findOneUser(array $filters = [])
     {
-        return $this->findOne('User', $filters);
+        return $this->_get(UserRepository::class)->findOne($filters);
     }
 
     /**
-     * Returns all channel objects
+     * Create new user instance. Does not persist user.
      *
-     * @param array $filters
-     * @return array
+     * @param array $data
+     * @return User
      */
-    public function findChannels($filters = [])
+    public function createUser(array $data = [])
     {
-        return $this->getAll('Channel', $filters);
+        return $this->_get(UserRepository::class)->create($data);
     }
-
-
 }

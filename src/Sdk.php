@@ -3,17 +3,46 @@
 namespace Mr\Sdk;
 
 
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\HandlerStack;
+use Mr\Sdk\Exception\InvalidCredentialsException;
+use Mr\Sdk\Exception\MrException;
+use Mr\Sdk\Http\Client;
+use Mr\Sdk\Http\Middleware\AuthMiddleware;
+use Mr\Sdk\Http\Middleware\ErrorsMiddleware;
+use Mr\Sdk\Interfaces\ContainerAccessorInterface;
+use Mr\Sdk\Model\Account\User;
+use Mr\Sdk\Model\Media\Media;
+use Mr\Sdk\Repository\Account\UserRepository;
+use Mr\Sdk\Repository\Media\MediaRepository;
 use Mr\Sdk\Service\MediaService;
 use Mr\Sdk\Service\AccountService;
+use Mr\Sdk\Traits\ContainerAccessor;
 
 /**
+ * @method static object get($name, $args = [])
+ * @method static MediaService getMediaService
+ * @method static AccountService getAccountService
+ *
  * Class Sdk
  * @package Mr\Sdk
  */
-class Sdk
+class Sdk implements ContainerAccessorInterface
 {
-    private static $token;
+    use ContainerAccessor;
+
     private static $instance;
+
+    private $accountId;
+    private $appId;
+    private $appSecret;
+    private $token;
+    private $options;
+
+    private $defaultHeaders = [
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/json'
+    ];
 
     /**
      * @var Factory
@@ -22,43 +51,169 @@ class Sdk
 
     /**
      * Service constructor.
+     * @param $accountId
+     * @param $appId
+     * @param $appSecret
      * @param string $token
+     * @param array $options
+     * @param array $definitions
+     * @throws MrException
      */
-    private function __construct($token)
+    private function __construct($accountId, $appId, $appSecret, $token = null, array $options = [])
     {
-        $definitions = [
-            'MediaService' => [
-                MediaService::class, [
-                    'token' => ['value' => $token]
+        $this->accountId = $accountId;
+        $this->appId = $appId;
+        $this->appSecret = $appSecret;
+        $this->token = $token;
+        $this->options = $options;
+
+        if ((!$accountId || !$appId || !$appSecret) && !$token) {
+            throw new MrException('Empty credentials');
+        }
+
+        if (!$token) {
+            $this->authenticate();
+        }
+
+        // Create default handler with all the default middlewares
+        $stack = HandlerStack::create();
+        $stack->remove('http_errors');
+        $stack->unshift(new AuthMiddleware($this->token), 'auth');
+
+        // Last to un-shift so it remains first to execute
+        $stack->unshift(new ErrorsMiddleware([]), 'http_errors');
+        $httpOptions = [
+            'handler' => $stack,
+            'headers' => $this->defaultHeaders
+        ];
+
+        $customDefinitions = isset($options['definitions']) ? $options['definitions'] : [];
+
+        $definitions = $customDefinitions + [
+            'Logger' => [
+                'single' => true,
+                'class' => Logger::class,
+            ],
+            // Clients
+            'MediaClient' => [
+                'single' => true,
+                'class' => Client::class,
+                'arguments' => [
+                    'options' => ['base_uri' => MediaService::BASE_URL] + $httpOptions
                 ]
             ],
-            'AccountService' => [
-                AccountService::class, [
-                    'token' => ['value' => $token]
+            'AccountClient' => [
+                'single' => true,
+                'class' => Client::class,
+                'arguments' => [
+                    'options' => ['base_uri' => AccountService::BASE_URL] + $httpOptions
+                ]
+            ],
+            // Services
+            MediaService::class => [
+                'single' => true,
+                'class' => MediaService::class,
+                'arguments' => [
+                    'client' => 'MediaClient'
+                ]
+            ],
+            AccountService::class => [
+                'single' => true,
+                'class' => AccountService::class,
+                'arguments' => [
+                    'client' => 'AccountClient'
+                ]
+            ],
+            // Repositories
+            MediaRepository::class => [
+                'single' => true,
+                'class' => MediaRepository::class,
+                'arguments' => [
+                    'client' => 'MediaClient'
+                ]
+            ],
+            UserRepository::class => [
+                'single' => true,
+                'class' => UserRepository::class,
+                'arguments' => [
+                    'client' => 'AccountClient'
+                ]
+            ],
+            // Models
+            Media::class => [
+                'single' => true,
+                'class' => Media::class,
+                'arguments' => [
+                    'repository' => 'UserRepository',
+                    'data' => null
+                ]
+            ],
+            User::class => [
+                'single' => false,
+                'class' => User::class,
+                'arguments' => [
+                    'repository' => 'UserRepository',
+                    'data' => null
                 ]
             ]
         ];
 
-        $instances = [];
-
-        $this->factory = new Factory($definitions, $instances);
+        $this->container = new Container($definitions);
     }
 
-    public static function setToken($token)
+    protected function isDebug()
     {
-        self::$token = $token;
+        return $this->options['debug'] ?? false;
+    }
 
-        self::$instance = null;
+    protected function authenticate()
+    {
+        $client = new Client([
+            'base_uri' => AccountService::BASE_URL,
+            'headers' => $this->defaultHeaders
+        ]);
+
+        $data = null;
+
+        try {
+            $data = $client->postData('user/authenticate', [
+                'vendor_uuid' => $this->accountId,
+                'username' => $this->appId,
+                'password' => $this->appSecret
+            ]);
+        } catch (RequestException $ex) {
+            // Just avoid request exception from propagating
+            if ($this->isDebug()) {
+                $this->_get('Logger')->log($ex->getMessage());
+            }
+        }
+
+        if (!isset($data, $data['data'], $data['data']['token'])) {
+            throw new InvalidCredentialsException();
+        }
+
+        return $this->token = $data['data']['token'];
+    }
+
+    protected static function create($accountId, $appId, $appSecret, $token = null, array $options = [])
+    {
+        self::$instance = new self($accountId, $appId, $appSecret, $token, $options);
+    }
+
+    public static function setCredentials($accountId, $appId, $appSecret, $token = null, array $options = [])
+    {
+        self::create($accountId, $appId, $appSecret, $token, $options);
+    }
+
+    public static function setAuthToken($token, array $options = [])
+    {
+        self::create(null,null, null, $token, $options);
     }
 
     protected static function getInstance()
     {
         if (!self::$instance) {
-            if (!self::$token) {
-                throw new \RuntimeException('Token must be set');
-            }
-
-            self::$instance = new self(self::$token);
+            throw new \RuntimeException('You need to set credentials or auth token first');
         }
 
         return self::$instance;
@@ -68,21 +223,22 @@ class Sdk
     {
         $instance = self::getInstance();
 
+        $name = '_' . $name;
+
         return call_user_func_array([$instance, $name], $arguments);
     }
 
     /**
-     * @param $name
-     * @return BaseService
-     * @throws \Exception
+     * @return MediaService
+     * @internal param $name
      */
-    protected function getService($name)
+    protected function _getMediaService()
     {
-        switch($name) {
-            case 'media': return $this->factory->resolve('MediaService');
-            case 'account': return $this->factory->resolve('AccountService');
-        }
+        return $this->_get(MediaService::class);
+    }
 
-        throw new \Exception('Service not found');
+    protected function _getAccountService()
+    {
+        return $this->_get(AccountService::class);
     }
 }

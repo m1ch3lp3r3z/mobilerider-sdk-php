@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michel
- * Date: 8/31/17
- * Time: 2:30 PM
- */
 
 use Mr\Sdk\Sdk;
+use PHPUnit\Framework\TestCase;
 
-class SdkTest
+class SdkTest extends TestCase
 {
     public function testAttemptToGetServiceWithNoTokenShouldFail()
     {
@@ -17,14 +12,14 @@ class SdkTest
 
     public function testTokenChangeShouldResetInstances()
     {
-        Sdk::setToken('123');
+        Sdk::setAuthToken('123');
 
-        $service = Sdk::getService('media');
+        $service = Sdk::getMediaService();
 
-        $this->assertEquals($service, Sdk::getService('media'));
+        $this->assertSame($service, Sdk::getMediaService());
 
-        Sdk::setToken('123');
+        Sdk::setAuthToken('123');
 
-        $this->assertNotEquals($service, Sdk::getService('media'));
+        $this->assertNotSame($service, Sdk::getMediaService());
     }
 }

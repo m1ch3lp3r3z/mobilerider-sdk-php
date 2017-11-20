@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Mr\Sdk\Http\Client;
 use RuntimeException;
 
 /**
@@ -15,7 +16,7 @@ use RuntimeException;
  * Date: 7/28/17
  * Time: 6:28 PM
  */
-class MockClient extends \Mr\Sdk\Client
+class MockClient extends Client
 {
     public function __construct(array $config = [])
     {
