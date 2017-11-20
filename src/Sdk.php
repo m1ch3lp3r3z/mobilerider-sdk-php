@@ -12,8 +12,10 @@ use Mr\Sdk\Http\Middleware\AuthMiddleware;
 use Mr\Sdk\Http\Middleware\ErrorsMiddleware;
 use Mr\Sdk\Interfaces\ContainerAccessorInterface;
 use Mr\Sdk\Model\Account\User;
+use Mr\Sdk\Model\Account\Vendor;
 use Mr\Sdk\Model\Media\Media;
 use Mr\Sdk\Repository\Account\UserRepository;
+use Mr\Sdk\Repository\Account\VendorRepository;
 use Mr\Sdk\Repository\Media\MediaRepository;
 use Mr\Sdk\Service\MediaService;
 use Mr\Sdk\Service\AccountService;
@@ -139,6 +141,13 @@ class Sdk implements ContainerAccessorInterface
                     'client' => 'AccountClient'
                 ]
             ],
+            VendorRepository::class => [
+                'single' => true,
+                'class' => VendorRepository::class,
+                'arguments' => [
+                    'client' => 'AccountClient'
+                ]
+            ],
             // Models
             Media::class => [
                 'single' => true,
@@ -153,6 +162,14 @@ class Sdk implements ContainerAccessorInterface
                 'class' => User::class,
                 'arguments' => [
                     'repository' => 'UserRepository',
+                    'data' => null
+                ]
+            ],
+            Vendor::class => [
+                'single' => false,
+                'class' => Vendor::class,
+                'arguments' => [
+                    'repository' => 'VendorRepository',
                     'data' => null
                 ]
             ]

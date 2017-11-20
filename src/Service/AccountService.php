@@ -4,6 +4,7 @@ namespace Mr\Sdk\Service;
 
 use Mr\Sdk\Model\Account\User;
 use Mr\Sdk\Repository\Account\UserRepository;
+use Mr\Sdk\Repository\Account\VendorRepository;
 
 class AccountService extends BaseService
 {
@@ -56,5 +57,10 @@ class AccountService extends BaseService
     public function createUser(array $data = [])
     {
         return $this->_get(UserRepository::class)->create($data);
+    }
+
+    public function createVendor(array $data = [])
+    {
+        return $this->_get(VendorRepository::class)->create($data);
     }
 }
