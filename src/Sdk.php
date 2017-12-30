@@ -11,9 +11,11 @@ use Mr\Sdk\Http\Client;
 use Mr\Sdk\Http\Middleware\AuthMiddleware;
 use Mr\Sdk\Http\Middleware\ErrorsMiddleware;
 use Mr\Sdk\Interfaces\ContainerAccessorInterface;
+use Mr\Sdk\Model\Account\OAuthToken;
 use Mr\Sdk\Model\Account\User;
 use Mr\Sdk\Model\Account\Vendor;
 use Mr\Sdk\Model\Media\Media;
+use Mr\Sdk\Repository\Account\OAuthTokenRepository;
 use Mr\Sdk\Repository\Account\UserRepository;
 use Mr\Sdk\Repository\Account\VendorRepository;
 use Mr\Sdk\Repository\Media\MediaRepository;
@@ -92,88 +94,103 @@ class Sdk implements ContainerAccessorInterface
         $customDefinitions = isset($options['definitions']) ? $options['definitions'] : [];
 
         $definitions = $customDefinitions + [
-            'Logger' => [
-                'single' => true,
-                'class' => Logger::class,
-            ],
-            // Clients
-            'MediaClient' => [
-                'single' => true,
-                'class' => Client::class,
-                'arguments' => [
-                    'options' => ['base_uri' => MediaService::BASE_URL] + $httpOptions
+                'Logger' => [
+                    'single' => true,
+                    'class' => Logger::class,
+                ],
+                // Clients
+                'MediaClient' => [
+                    'single' => true,
+                    'class' => Client::class,
+                    'arguments' => [
+                        'options' => ['base_uri' => MediaService::BASE_URL] + $httpOptions
+                    ]
+                ],
+                'AccountClient' => [
+                    'single' => true,
+                    'class' => Client::class,
+                    'arguments' => [
+                        'options' => ['base_uri' => AccountService::BASE_URL] + $httpOptions
+                    ]
+                ],
+                // Services
+                MediaService::class => [
+                    'single' => true,
+                    'class' => MediaService::class,
+                    'arguments' => [
+                        'client' => 'MediaClient'
+                    ]
+                ],
+                AccountService::class => [
+                    'single' => true,
+                    'class' => AccountService::class,
+                    'arguments' => [
+                        'client' => 'AccountClient'
+                    ]
+                ],
+                // Repositories
+                MediaRepository::class => [
+                    'single' => true,
+                    'class' => MediaRepository::class,
+                    'arguments' => [
+                        'client' => 'MediaClient'
+                    ]
+                ],
+                UserRepository::class => [
+                    'single' => true,
+                    'class' => UserRepository::class,
+                    'arguments' => [
+                        'client' => 'AccountClient'
+                    ]
+                ],
+                VendorRepository::class => [
+                    'single' => true,
+                    'class' => VendorRepository::class,
+                    'arguments' => [
+                        'client' => 'AccountClient'
+                    ]
+                ],
+                OAuthTokenRepository::class => [
+                    'single' => true,
+                    'class' => OAuthTokenRepository::class,
+                    'arguments' => [
+                        'client' => 'AccountClient'
+                    ]
+                ],
+                // Models
+                Media::class => [
+                    'single' => true,
+                    'class' => Media::class,
+                    'arguments' => [
+                        'repository' => 'UserRepository',
+                        'data' => null
+                    ]
+                ],
+                User::class => [
+                    'single' => false,
+                    'class' => User::class,
+                    'arguments' => [
+                        'repository' => 'UserRepository',
+                        'data' => null
+                    ]
+                ],
+                Vendor::class => [
+                    'single' => false,
+                    'class' => Vendor::class,
+                    'arguments' => [
+                        'repository' => 'VendorRepository',
+                        'data' => null
+                    ]
+                ],
+                OAuthToken::class => [
+                    'single' => false,
+                    'class' => OAuthToken::class,
+                    'arguments' => [
+                        'repository' => OAuthTokenRepository::class,
+                        'data' => null
+                    ]
                 ]
-            ],
-            'AccountClient' => [
-                'single' => true,
-                'class' => Client::class,
-                'arguments' => [
-                    'options' => ['base_uri' => AccountService::BASE_URL] + $httpOptions
-                ]
-            ],
-            // Services
-            MediaService::class => [
-                'single' => true,
-                'class' => MediaService::class,
-                'arguments' => [
-                    'client' => 'MediaClient'
-                ]
-            ],
-            AccountService::class => [
-                'single' => true,
-                'class' => AccountService::class,
-                'arguments' => [
-                    'client' => 'AccountClient'
-                ]
-            ],
-            // Repositories
-            MediaRepository::class => [
-                'single' => true,
-                'class' => MediaRepository::class,
-                'arguments' => [
-                    'client' => 'MediaClient'
-                ]
-            ],
-            UserRepository::class => [
-                'single' => true,
-                'class' => UserRepository::class,
-                'arguments' => [
-                    'client' => 'AccountClient'
-                ]
-            ],
-            VendorRepository::class => [
-                'single' => true,
-                'class' => VendorRepository::class,
-                'arguments' => [
-                    'client' => 'AccountClient'
-                ]
-            ],
-            // Models
-            Media::class => [
-                'single' => true,
-                'class' => Media::class,
-                'arguments' => [
-                    'repository' => 'UserRepository',
-                    'data' => null
-                ]
-            ],
-            User::class => [
-                'single' => false,
-                'class' => User::class,
-                'arguments' => [
-                    'repository' => 'UserRepository',
-                    'data' => null
-                ]
-            ],
-            Vendor::class => [
-                'single' => false,
-                'class' => Vendor::class,
-                'arguments' => [
-                    'repository' => 'VendorRepository',
-                    'data' => null
-                ]
-            ]
-        ];
+            ];
 
         $this->container = new Container($definitions);
     }

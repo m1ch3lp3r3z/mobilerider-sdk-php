@@ -3,6 +3,7 @@
 namespace Mr\Sdk\Service;
 
 use Mr\Sdk\Model\Account\User;
+use Mr\Sdk\Repository\Account\OAuthTokenRepository;
 use Mr\Sdk\Repository\Account\UserRepository;
 use Mr\Sdk\Repository\Account\VendorRepository;
 
@@ -62,5 +63,15 @@ class AccountService extends BaseService
     public function createVendor(array $data = [])
     {
         return $this->_get(VendorRepository::class)->create($data);
+    }
+
+    public function getOAuthToken($id)
+    {
+        return $this->_get(UserRepository::class)->get($id);
+    }
+
+    public function getOAuthTokenByProvider($provider)
+    {
+        return $this->_get(OAuthTokenRepository::class)->getByProvider($provider);
     }
 }

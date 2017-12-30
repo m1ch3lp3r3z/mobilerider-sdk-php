@@ -39,14 +39,22 @@ abstract class BaseRepository implements ContainerAccessorInterface
         ]);
     }
 
-    public function getUri($id = null)
+    public function getUri($id = null, $path = null)
     {
         $model = static::getModelClass();
 
-        $arr = [$model::getResource()];
+        $arr = (array) $model::getResource();
 
         if (!is_null($id)) {
             $arr[] = $id;
+        }
+
+        if (!is_null($path)) {
+            if (is_array($path)) {
+                $arr = array_merge($arr, $path);
+            } else {
+                $arr[] = $path;
+            }
         }
 
         return implode('/', $arr);
