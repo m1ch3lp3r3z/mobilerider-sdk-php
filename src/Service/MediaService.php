@@ -7,7 +7,7 @@ use Mr\Sdk\Repository\Media\MediaRepository;
 
 class MediaService extends BaseService
 {
-    const BASE_URL = 'http://localhost:8080/api/';
+    const BASE_URL = 'https://api.mobilerider.com/api/';
     const APP_VENDOR_HEADER = 'X-Vendor-App-Id';
 
     protected function getBaseUrl()

@@ -11,7 +11,7 @@ use Mr\Sdk\Repository\Account\VendorRepository;
 
 class AccountService extends BaseService
 {
-    const BASE_URL = 'http://localhost:8002/api/v1/';
+    const BASE_URL = 'https://accounts.mobilerider.com/api/v1/';
 
     protected function getBaseUrl()
     {
