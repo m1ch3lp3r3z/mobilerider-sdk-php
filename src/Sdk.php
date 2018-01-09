@@ -239,7 +239,7 @@ class Sdk implements ContainerAccessorInterface
         $client = new Client([
             'base_uri' => AccountService::BASE_URL,
             'headers' => $this->defaultHeaders + [
-                    AuthMiddleware::AUTH_HEADER, "Bearer {$this->token}"
+                    AuthMiddleware::AUTH_HEADER => "Bearer {$this->token}"
                 ]
         ]);
 
