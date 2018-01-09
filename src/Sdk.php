@@ -229,6 +229,45 @@ class Sdk implements ContainerAccessorInterface
         return $this->token = $data['data']['token'];
     }
 
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    public function getTokenFor($userId)
+    {
+        $client = new Client([
+            'base_uri' => AccountService::BASE_URL,
+            'headers' => $this->defaultHeaders + [
+                    AuthMiddleware::AUTH_HEADER, "Bearer {$this->token}"
+                ]
+        ]);
+
+        $data = null;
+
+        try {
+            $data = $client->postData("user/$userId/impersonate", []);
+        } catch (RequestException $ex) {
+            // Just avoid request exception from propagating
+            if ($this->isDebug()) {
+                $this->_get('Logger')->log($ex->getMessage());
+            }
+        }
+
+        if (!isset($data, $data['data'], $data['data']['token'])) {
+            throw new InvalidCredentialsException();
+        }
+
+        return $data['data']['token'];
+    }
+
+    public static function impersonate($userId)
+    {
+        $token = self::getInstance()->getTokenFor($userId);
+
+        self::create(null, null, null, $token);
+    }
+
     protected static function create($accountId, $appId, $appSecret, $token = null, array $options = [])
     {
         self::$instance = new self($accountId, $appId, $appSecret, $token, $options);
@@ -244,6 +283,9 @@ class Sdk implements ContainerAccessorInterface
         self::create(null,null, null, $token, $options);
     }
 
+    /**
+     * @return Sdk
+     */
     protected static function getInstance()
     {
         if (!self::$instance) {
