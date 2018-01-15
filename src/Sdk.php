@@ -24,7 +24,6 @@ use Mr\Sdk\Service\AccountService;
 use Mr\Sdk\Traits\ContainerAccessor;
 
 /**
- * @method static object get($name, $args = [])
  * @method static MediaService getMediaService
  * @method static AccountService getAccountService
  *
@@ -42,6 +41,7 @@ class Sdk implements ContainerAccessorInterface
     private $appSecret;
     private $token;
     private $options;
+    private $httpOptions;
 
     private $defaultHeaders = [
         'Accept' => 'application/json',
@@ -60,16 +60,32 @@ class Sdk implements ContainerAccessorInterface
      * @param $appSecret
      * @param string $token
      * @param array $options
-     * @param array $definitions
+     * @param array $httpOptions
      * @throws MrException
      */
-    private function __construct($accountId, $appId, $appSecret, $token = null, array $options = [])
+    private function __construct($accountId, $appId, $appSecret, $token = null, array $options = [], array $httpOptions = [])
     {
         $this->accountId = $accountId;
         $this->appId = $appId;
         $this->appSecret = $appSecret;
         $this->token = $token;
         $this->options = $options;
+        $this->httpOptions = [
+            'account' => array_merge(
+                [
+                    'base_uri' => AccountService::BASE_URL,
+                    'headers' => $this->defaultHeaders
+                ],
+                $httpOptions['account'] ?? []
+            ),
+            'media' => array_merge(
+                [
+                    'base_uri' => MediaService::BASE_URL,
+                    'headers' => $this->defaultHeaders
+                ],
+                $httpOptions['media'] ?? []
+            ),
+        ];
 
         if ((!$accountId || !$appId || !$appSecret) && !$token) {
             throw new MrException('Empty credentials');
@@ -86,9 +102,8 @@ class Sdk implements ContainerAccessorInterface
 
         // Last to un-shift so it remains first to execute
         $stack->unshift(new ErrorsMiddleware([]), 'http_errors');
-        $httpOptions = [
+        $httpDefaultRuntimeOptions = [
             'handler' => $stack,
-            'headers' => $this->defaultHeaders
         ];
 
         $customDefinitions = isset($options['definitions']) ? $options['definitions'] : [];
@@ -103,14 +118,14 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => Client::class,
                     'arguments' => [
-                        'options' => ['base_uri' => MediaService::BASE_URL] + $httpOptions
+                        'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['media'])
                     ]
                 ],
                 'AccountClient' => [
                     'single' => true,
                     'class' => Client::class,
                     'arguments' => [
-                        'options' => ['base_uri' => AccountService::BASE_URL] + $httpOptions
+                        'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['account'])
                     ]
                 ],
                 // Services
@@ -202,10 +217,7 @@ class Sdk implements ContainerAccessorInterface
 
     protected function authenticate()
     {
-        $client = new Client([
-            'base_uri' => AccountService::BASE_URL,
-            'headers' => $this->defaultHeaders
-        ]);
+        $client = new Client($this->httpOptions['account']);
 
         $data = null;
 
@@ -234,15 +246,27 @@ class Sdk implements ContainerAccessorInterface
         return $this->accountId;
     }
 
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function getHttpOptions()
+    {
+        return $this->httpOptions;
+    }
+
     public function getTokenFor($userId)
     {
-        $client = new Client([
-            'base_uri' => AccountService::BASE_URL,
-            'headers' => $this->defaultHeaders + [
-                    AuthMiddleware::AUTH_HEADER => "Bearer {$this->token}"
-                ]
-        ]);
+        $httpOptions = $this->httpOptions['account'];
+        $httpOptions['headers'] = array_merge($httpOptions['headers'], [
+                AuthMiddleware::AUTH_HEADER => "Bearer {$this->token}"
+            ]);
 
+        $client = new Client($httpOptions);
         $data = null;
 
         try {
@@ -254,33 +278,37 @@ class Sdk implements ContainerAccessorInterface
             }
         }
 
-        if (!isset($data, $data['data'], $data['data']['token'])) {
+        if (!$data || !isset($data['data']['token'])) {
             throw new InvalidCredentialsException();
         }
 
         return $data['data']['token'];
     }
 
-    public static function impersonate($userId)
+    public static function impersonate($userId, $options = null, $httpOptions = null)
     {
-        $token = self::getInstance()->getTokenFor($userId);
+        $instance = self::getInstance();
 
-        self::create(null, null, null, $token);
+        $options = is_null($options) ? $instance->getOptions() : $options;
+        $httpOptions = is_null($httpOptions) ? $instance->getHttpOptions() : $httpOptions;
+        $token = $instance->getTokenFor($userId);
+
+        self::create(null, null, null, $token, $options, $httpOptions);
     }
 
-    protected static function create($accountId, $appId, $appSecret, $token = null, array $options = [])
+    protected static function create($accountId, $appId, $appSecret, $token, array $options, array $httpOptions)
     {
-        self::$instance = new self($accountId, $appId, $appSecret, $token, $options);
+        self::$instance = new self($accountId, $appId, $appSecret, $token, $options, $httpOptions);
     }
 
-    public static function setCredentials($accountId, $appId, $appSecret, $token = null, array $options = [])
+    public static function setCredentials($accountId, $appId, $appSecret, $token = null, array $options = [], array $httpOptions = [])
     {
-        self::create($accountId, $appId, $appSecret, $token, $options);
+        self::create($accountId, $appId, $appSecret, $token, $options, $httpOptions);
     }
 
-    public static function setAuthToken($token, array $options = [])
+    public static function setAuthToken($token, array $options = [], array $httpOptions = [])
     {
-        self::create(null,null, null, $token, $options);
+        self::create(null,null, null, $token, $options, $httpOptions);
     }
 
     /**
@@ -313,6 +341,9 @@ class Sdk implements ContainerAccessorInterface
         return $this->_get(MediaService::class);
     }
 
+    /**
+     * @return AccountService
+     */
     protected function _getAccountService()
     {
         return $this->_get(AccountService::class);
