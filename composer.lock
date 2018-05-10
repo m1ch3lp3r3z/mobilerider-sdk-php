@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eee873c43596fe765bc89e25e2e0f451",
+    "content-hash": "cc6a82bdc3d4492764e7b794295d062b",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -194,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mobilerider/mobilerider-php-bootstrap.git",
-                "reference": "6d1935ad2e439d8b640736f7cc2bed76a7491967"
+                "reference": "6c8e67292628bee8f55d8c23a5898f2916098e6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mobilerider/mobilerider-php-bootstrap/zipball/6d1935ad2e439d8b640736f7cc2bed76a7491967",
-                "reference": "6d1935ad2e439d8b640736f7cc2bed76a7491967",
+                "url": "https://api.github.com/repos/mobilerider/mobilerider-php-bootstrap/zipball/6c8e67292628bee8f55d8c23a5898f2916098e6d",
+                "reference": "6c8e67292628bee8f55d8c23a5898f2916098e6d",
                 "shasum": ""
             },
             "require": {
@@ -245,7 +245,7 @@
                 "source": "https://github.com/mobilerider/mobilerider-php-bootstrap/tree/master",
                 "issues": "https://github.com/mobilerider/mobilerider-php-bootstrap/issues"
             },
-            "time": "2018-05-09T17:37:25+00:00"
+            "time": "2018-05-10T18:56:25+00:00"
         },
         {
             "name": "psr/http-message",
