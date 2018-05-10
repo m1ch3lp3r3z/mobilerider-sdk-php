@@ -3,7 +3,7 @@
 namespace Mr\Sdk\Model\Media;
 
 
-use Mr\Sdk\Model\BaseModel;
+use Mr\Bootstrap\Model\BaseModel;
 
 class Media extends BaseModel
 {

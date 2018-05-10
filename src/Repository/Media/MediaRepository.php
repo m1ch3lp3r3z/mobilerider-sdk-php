@@ -4,24 +4,24 @@
 namespace Mr\Sdk\Repository\Media;
 
 
+use Mr\Bootstrap\Repository\BaseRepository;
 use Mr\Sdk\Model\Media\Media;
-use Mr\Sdk\Repository\BaseRepository;
 
 class MediaRepository extends BaseRepository
 {
-    public static function getModelClass()
+    public function getModelClass()
     {
         return Media::class;
     }
 
-    protected function parseOne(array $data, array &$metadata = [])
+    public function parseOne(array $data, array &$metadata = [])
     {
         $metadata = $data['meta'];
 
         return $data['object'];
     }
 
-    protected function parseMany(array $data, array &$metadata = [])
+    public function parseAll(array $data, array &$metadata = [])
     {
         $metadata = $data['meta'];
 

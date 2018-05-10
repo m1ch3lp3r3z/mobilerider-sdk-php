@@ -4,12 +4,12 @@
 namespace Mr\Sdk\Repository\Account;
 
 
+use Mr\Bootstrap\Repository\BaseRepository;
 use Mr\Sdk\Model\Account\OAuthToken;
-use Mr\Sdk\Repository\BaseRepository;
 
 class OAuthTokenRepository extends BaseRepository
 {
-    public static function getModelClass()
+    public function getModelClass()
     {
         return OAuthToken::class;
     }

@@ -3,7 +3,7 @@
 namespace Mr\Sdk\Model\Account;
 
 
-use Mr\Sdk\Model\BaseModel;
+use Mr\Bootstrap\Model\BaseModel;
 
 class Vendor extends BaseModel
 {

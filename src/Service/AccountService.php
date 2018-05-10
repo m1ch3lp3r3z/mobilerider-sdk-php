@@ -2,6 +2,7 @@
 
 namespace Mr\Sdk\Service;
 
+use Mr\Bootstrap\Service\BaseHttpService;
 use Mr\Sdk\Model\Account\OAuthToken;
 use Mr\Sdk\Model\Account\User;
 use Mr\Sdk\Model\Account\Vendor;
@@ -9,15 +10,8 @@ use Mr\Sdk\Repository\Account\OAuthTokenRepository;
 use Mr\Sdk\Repository\Account\UserRepository;
 use Mr\Sdk\Repository\Account\VendorRepository;
 
-class AccountService extends BaseService
+class AccountService extends BaseHttpService
 {
-    const BASE_URL = 'https://accounts.mobilerider.com/api/v1/';
-
-    protected function getBaseUrl()
-    {
-        return self::BASE_URL;
-    }
-
     /**
      * Returns user by id
      *
@@ -26,7 +20,7 @@ class AccountService extends BaseService
      */
     public function getUser($id)
     {
-        return $this->_get(UserRepository::class)->get($id);
+        return $this->getRepository(UserRepository::class)->get($id);
     }
 
     /**
@@ -37,51 +31,7 @@ class AccountService extends BaseService
      */
     public function findUsers(array $filters = [])
     {
-        return $this->_get(UserRepository::class)->find($filters);
-    }
-
-    /**
-     * Returns first user matching filters
-     *
-     * @param array $filters
-     * @return User
-     */
-    public function findOneUser(array $filters = [])
-    {
-        return $this->_get(UserRepository::class)->findOne($filters);
-    }
-
-    /**
-     * Returns user by id
-     *
-     * @param $id
-     * @return Vendor
-     */
-    public function getVendor($id)
-    {
-        return $this->_get(VendorRepository::class)->get($id);
-    }
-
-    /**
-     * Returns all vendors matching filters
-     *
-     * @param array $filters
-     * @return array
-     */
-    public function findVendors(array $filters = [])
-    {
-        return $this->_get(VendorRepository::class)->find($filters);
-    }
-
-    /**
-     * Returns first vendor matching filters
-     *
-     * @param array $filters
-     * @return Vendor
-     */
-    public function findOneVendor(array $filters = [])
-    {
-        return $this->_get(VendorRepository::class)->findOne($filters);
+        return $this->getRepository(UserRepository::class)->all($filters);
     }
 
     /**
@@ -92,7 +42,51 @@ class AccountService extends BaseService
      */
     public function createUser(array $data = [])
     {
-        return $this->_get(UserRepository::class)->create($data);
+        return $this->getRepository(UserRepository::class)->create($data);
+    }
+
+    /**
+     * Returns first user matching filters
+     *
+     * @param array $filters
+     * @return User
+     */
+    public function findOneUser(array $filters = [])
+    {
+        return $this->getRepository(UserRepository::class)->findOne($filters);
+    }
+
+    /**
+     * Returns user by id
+     *
+     * @param $id
+     * @return Vendor
+     */
+    public function getVendor($id)
+    {
+        return $this->getRepository(VendorRepository::class)->get($id);
+    }
+
+    /**
+     * Returns all vendors matching filters
+     *
+     * @param array $filters
+     * @return array
+     */
+    public function findVendors(array $filters = [])
+    {
+        return $this->getRepository(VendorRepository::class)->find($filters);
+    }
+
+    /**
+     * Returns first vendor matching filters
+     *
+     * @param array $filters
+     * @return Vendor
+     */
+    public function findOneVendor(array $filters = [])
+    {
+        return $this->getRepository(VendorRepository::class)->findOne($filters);
     }
 
     /**
@@ -101,12 +95,12 @@ class AccountService extends BaseService
      */
     public function createVendor(array $data = [])
     {
-        return $this->_get(VendorRepository::class)->create($data);
+        return $this->getRepository(VendorRepository::class)->create($data);
     }
 
     public function getOAuthToken($id)
     {
-        return $this->_get(UserRepository::class)->get($id);
+        return $this->getRepository(UserRepository::class)->get($id);
     }
 
     /**
@@ -115,6 +109,6 @@ class AccountService extends BaseService
      */
     public function getOAuthTokenByProvider($provider)
     {
-        return $this->_get(OAuthTokenRepository::class)->getByProvider($provider);
+        return $this->getRepository(OAuthTokenRepository::class)->getByProvider($provider);
     }
 }

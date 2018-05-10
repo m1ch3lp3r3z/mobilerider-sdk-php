@@ -5,12 +5,15 @@ namespace Mr\Sdk;
 
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
+use Mr\Bootstrap\Container;
+use Mr\Bootstrap\Http\Middleware\TokenAuthMiddleware;
+use Mr\Bootstrap\Interfaces\ContainerAccessorInterface;
+use Mr\Bootstrap\Traits\ContainerAccessor;
+use Mr\Bootstrap\Utils\Logger;
 use Mr\Sdk\Exception\InvalidCredentialsException;
 use Mr\Sdk\Exception\MrException;
 use Mr\Sdk\Http\Client;
-use Mr\Sdk\Http\Middleware\AuthMiddleware;
 use Mr\Sdk\Http\Middleware\ErrorsMiddleware;
-use Mr\Sdk\Interfaces\ContainerAccessorInterface;
 use Mr\Sdk\Model\Account\OAuthToken;
 use Mr\Sdk\Model\Account\User;
 use Mr\Sdk\Model\Account\Vendor;
@@ -21,7 +24,6 @@ use Mr\Sdk\Repository\Account\VendorRepository;
 use Mr\Sdk\Repository\Media\MediaRepository;
 use Mr\Sdk\Service\MediaService;
 use Mr\Sdk\Service\AccountService;
-use Mr\Sdk\Traits\ContainerAccessor;
 
 /**
  * @method static MediaService getMediaService
@@ -32,6 +34,8 @@ use Mr\Sdk\Traits\ContainerAccessor;
  */
 class Sdk implements ContainerAccessorInterface
 {
+    const ACCOUNT_VERSION = 'v1';
+
     use ContainerAccessor;
 
     private static $instance;
@@ -47,11 +51,6 @@ class Sdk implements ContainerAccessorInterface
         'Accept' => 'application/json',
         'Content-Type' => 'application/json'
     ];
-
-    /**
-     * @var Factory
-     */
-    protected $factory;
 
     /**
      * Service constructor.
@@ -73,14 +72,14 @@ class Sdk implements ContainerAccessorInterface
         $this->httpOptions = [
             'account' => array_merge(
                 [
-                    'base_uri' => AccountService::BASE_URL,
+                    'base_uri' => 'https://accounts.mobilerider.com/api/',
                     'headers' => $this->defaultHeaders
                 ],
                 $httpOptions['account'] ?? []
             ),
             'media' => array_merge(
                 [
-                    'base_uri' => MediaService::BASE_URL,
+                    'base_uri' => 'https://api.mobilerider.com/api/',
                     'headers' => $this->defaultHeaders
                 ],
                 $httpOptions['media'] ?? []
@@ -98,7 +97,7 @@ class Sdk implements ContainerAccessorInterface
         // Create default handler with all the default middlewares
         $stack = HandlerStack::create();
         $stack->remove('http_errors');
-        $stack->unshift(new AuthMiddleware($this->token), 'auth');
+        $stack->unshift(new TokenAuthMiddleware($this->token), 'auth');
 
         // Last to un-shift so it remains first to execute
         $stack->unshift(new ErrorsMiddleware([]), 'http_errors');
@@ -111,7 +110,7 @@ class Sdk implements ContainerAccessorInterface
         $definitions = $customDefinitions + [
                 'Logger' => [
                     'single' => true,
-                    'class' => Logger::class,
+                    'instance' => Logger::getInstance(),
                 ],
                 // Clients
                 'MediaClient' => [
@@ -133,14 +132,17 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => MediaService::class,
                     'arguments' => [
-                        'client' => 'MediaClient'
+                        'client' => \srvArg('MediaClient')
                     ]
                 ],
                 AccountService::class => [
                     'single' => true,
                     'class' => AccountService::class,
                     'arguments' => [
-                        'client' => 'AccountClient'
+                        'client' => \srvArg('AccountClient'),
+                        'options' => [
+                            'version' => self::ACCOUNT_VERSION
+                        ]
                     ]
                 ],
                 // Repositories
@@ -148,28 +150,32 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => MediaRepository::class,
                     'arguments' => [
-                        'client' => 'MediaClient'
+                        'client' => \srvArg('MediaClient'),
+                        'options' => []
                     ]
                 ],
                 UserRepository::class => [
                     'single' => true,
                     'class' => UserRepository::class,
                     'arguments' => [
-                        'client' => 'AccountClient'
+                        'client' => \srvArg('AccountClient'),
+                        'options' => []
                     ]
                 ],
                 VendorRepository::class => [
                     'single' => true,
                     'class' => VendorRepository::class,
                     'arguments' => [
-                        'client' => 'AccountClient'
+                        'client' => \srvArg('AccountClient'),
+                        'options' => []
                     ]
                 ],
                 OAuthTokenRepository::class => [
                     'single' => true,
                     'class' => OAuthTokenRepository::class,
                     'arguments' => [
-                        'client' => 'AccountClient'
+                        'client' => \srvArg('AccountClient'),
+                        'options' => []
                     ]
                 ],
                 // Models
@@ -177,7 +183,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => Media::class,
                     'arguments' => [
-                        'repository' => 'UserRepository',
+                        'repository' => \srvArg(UserRepository::class),
                         'data' => null
                     ]
                 ],
@@ -185,7 +191,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => false,
                     'class' => User::class,
                     'arguments' => [
-                        'repository' => 'UserRepository',
+                        'repository' => \srvArg(UserRepository::class),
                         'data' => null
                     ]
                 ],
@@ -193,7 +199,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => false,
                     'class' => Vendor::class,
                     'arguments' => [
-                        'repository' => 'VendorRepository',
+                        'repository' => \srvArg(VendorRepository::class),
                         'data' => null
                     ]
                 ],
@@ -201,7 +207,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => false,
                     'class' => OAuthToken::class,
                     'arguments' => [
-                        'repository' => OAuthTokenRepository::class,
+                        'repository' => \srvArg(OAuthTokenRepository::class),
                         'data' => null
                     ]
                 ]
@@ -218,11 +224,11 @@ class Sdk implements ContainerAccessorInterface
     protected function authenticate()
     {
         $client = new Client($this->httpOptions['account']);
-
+        $version = self::ACCOUNT_VERSION;
         $data = null;
 
         try {
-            $data = $client->postData('user/authenticate', [
+            $data = $client->postData("{$version}/users/authenticate", [
                 'vendor_uuid' => $this->accountId,
                 'username' => $this->appId,
                 'password' => $this->appSecret
@@ -230,11 +236,11 @@ class Sdk implements ContainerAccessorInterface
         } catch (RequestException $ex) {
             // Just avoid request exception from propagating
             if ($this->isDebug()) {
-                $this->_get('Logger')->log($ex->getMessage());
+                \logger()->error($ex->getMessage());
             }
         }
 
-        if (!isset($data, $data['data'], $data['data']['token'])) {
+        if (! isset($data, $data['data'], $data['data']['token'])) {
             throw new InvalidCredentialsException();
         }
 
@@ -263,18 +269,19 @@ class Sdk implements ContainerAccessorInterface
     {
         $httpOptions = $this->httpOptions['account'];
         $httpOptions['headers'] = array_merge($httpOptions['headers'], [
-                AuthMiddleware::AUTH_HEADER => "Bearer {$this->token}"
+                TokenAuthMiddleware::AUTH_HEADER => "Bearer {$this->token}"
             ]);
 
         $client = new Client($httpOptions);
+        $version = self::ACCOUNT_VERSION;
         $data = null;
 
         try {
-            $data = $client->postData("user/$userId/impersonate", []);
+            $data = $client->postData("{$version}/users/$userId/impersonate", []);
         } catch (RequestException $ex) {
             // Just avoid request exception from propagating
             if ($this->isDebug()) {
-                $this->_get('Logger')->log($ex->getMessage());
+                \logger()->error($ex->getMessage());
             }
         }
 
