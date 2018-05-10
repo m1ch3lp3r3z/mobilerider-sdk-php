@@ -308,9 +308,9 @@ class Sdk implements ContainerAccessorInterface
         self::$instance = new self($accountId, $appId, $appSecret, $token, $options, $httpOptions);
     }
 
-    public static function setCredentials($accountId, $appId, $appSecret, $token = null, array $options = [], array $httpOptions = [])
+    public static function setCredentials($accountId, $appId, $appSecret, array $options = [], array $httpOptions = [])
     {
-        self::create($accountId, $appId, $appSecret, $token, $options, $httpOptions);
+        self::create($accountId, $appId, $appSecret, null, $options, $httpOptions);
     }
 
     public static function setAuthToken($token, array $options = [], array $httpOptions = [])
