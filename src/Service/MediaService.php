@@ -40,7 +40,7 @@ class MediaService extends BaseHttpService
      */
     public function findOneMedia(array $filters = [])
     {
-        return $this->getRepository(MediaRepository::class)->findOne($filters);
+        return $this->getRepository(MediaRepository::class)->one($filters);
     }
 
     /**

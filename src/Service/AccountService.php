@@ -53,7 +53,7 @@ class AccountService extends BaseHttpService
      */
     public function findOneUser(array $filters = [])
     {
-        return $this->getRepository(UserRepository::class)->findOne($filters);
+        return $this->getRepository(UserRepository::class)->one($filters);
     }
 
     /**
@@ -75,7 +75,7 @@ class AccountService extends BaseHttpService
      */
     public function findVendors(array $filters = [])
     {
-        return $this->getRepository(VendorRepository::class)->find($filters);
+        return $this->getRepository(VendorRepository::class)->all($filters);
     }
 
     /**
@@ -86,7 +86,7 @@ class AccountService extends BaseHttpService
      */
     public function findOneVendor(array $filters = [])
     {
-        return $this->getRepository(VendorRepository::class)->findOne($filters);
+        return $this->getRepository(VendorRepository::class)->one($filters);
     }
 
     /**
