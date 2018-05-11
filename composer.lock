@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc6a82bdc3d4492764e7b794295d062b",
+    "content-hash": "33824df768ede98b444275b03d9c3fc4",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -194,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mobilerider/mobilerider-php-bootstrap.git",
-                "reference": "6c8e67292628bee8f55d8c23a5898f2916098e6d"
+                "reference": "276f1105e1211f0afb7d3330aafebfc9c1fb10c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mobilerider/mobilerider-php-bootstrap/zipball/6c8e67292628bee8f55d8c23a5898f2916098e6d",
-                "reference": "6c8e67292628bee8f55d8c23a5898f2916098e6d",
+                "url": "https://api.github.com/repos/mobilerider/mobilerider-php-bootstrap/zipball/276f1105e1211f0afb7d3330aafebfc9c1fb10c2",
+                "reference": "276f1105e1211f0afb7d3330aafebfc9c1fb10c2",
                 "shasum": ""
             },
             "require": {
@@ -245,7 +245,7 @@
                 "source": "https://github.com/mobilerider/mobilerider-php-bootstrap/tree/master",
                 "issues": "https://github.com/mobilerider/mobilerider-php-bootstrap/issues"
             },
-            "time": "2018-05-10T18:56:25+00:00"
+            "time": "2018-05-11T16:03:32+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1103,12 +1103,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "bf040932271d851d3e94145bc09dd10e2db9b8fe"
+                "reference": "30218e30c0763cebbd626ba22770493b400cc8db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/bf040932271d851d3e94145bc09dd10e2db9b8fe",
-                "reference": "bf040932271d851d3e94145bc09dd10e2db9b8fe",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/30218e30c0763cebbd626ba22770493b400cc8db",
+                "reference": "30218e30c0763cebbd626ba22770493b400cc8db",
                 "shasum": ""
             },
             "require": {
@@ -1179,7 +1179,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-05-06T12:34:25+00:00"
+            "time": "2018-05-11T07:20:52+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

@@ -3,7 +3,7 @@
 namespace Mr\Sdk\Http;
 
 
-use Mr\Bootstrap\Data\JsonTransformer;
+use Mr\Bootstrap\Data\JsonEncoder;
 use Mr\Bootstrap\Interfaces\HttpDataClientInterface;
 use Mr\Bootstrap\Traits\HttpDataClient;
 
@@ -15,6 +15,6 @@ class Client extends \GuzzleHttp\Client implements HttpDataClientInterface
     {
         parent::__construct($config);
 
-        $this->setDataTransformer(new JsonTransformer());
+        $this->setDataEncoder(new JsonEncoder());
     }
 }
