@@ -14,8 +14,19 @@ class OAuthTokenRepository extends BaseRepository
         return OAuthToken::class;
     }
 
-    public function getByProvider($provider, $asArray = false)
+    public function getByProvider($provider, $liveMode = true)
     {
-        return $this->one([['provider', $provider]], $asArray);
+        $data = $this->client->getData(
+            $this->getUri(null, ['provider', $provider]),
+            ['live_mode' => intval($liveMode)]
+        );
+
+        if (! $data) {
+            return null;
+        }
+
+        $data = $data[0];
+
+        return $this->create($this->parseOne($data));
     }
 }

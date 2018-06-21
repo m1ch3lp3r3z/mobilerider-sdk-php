@@ -107,8 +107,8 @@ class AccountService extends BaseHttpService
      * @param $provider
      * @return OAuthToken
      */
-    public function getOAuthTokenByProvider($provider)
+    public function getOAuthTokenByProvider($provider, $liveMode = true)
     {
-        return $this->getRepository(OAuthTokenRepository::class)->getByProvider($provider);
+        return $this->getRepository(OAuthTokenRepository::class)->getByProvider($provider, $liveMode);
     }
 }
