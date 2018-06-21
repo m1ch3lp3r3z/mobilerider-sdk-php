@@ -21,6 +21,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/mobilerider/mobilerider-php-bootstrap.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/m1ch3lp3r3z/laravel-helpers.git"
         }
     ],
     "require": {

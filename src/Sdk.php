@@ -132,14 +132,14 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => MediaService::class,
                     'arguments' => [
-                        'client' => \srvArg('MediaClient')
+                        'client' => \mr_srv_arg('MediaClient')
                     ]
                 ],
                 AccountService::class => [
                     'single' => true,
                     'class' => AccountService::class,
                     'arguments' => [
-                        'client' => \srvArg('AccountClient'),
+                        'client' => \mr_srv_arg('AccountClient'),
                         'options' => [
                             'version' => self::ACCOUNT_VERSION
                         ]
@@ -150,7 +150,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => MediaRepository::class,
                     'arguments' => [
-                        'client' => \srvArg('MediaClient'),
+                        'client' => \mr_srv_arg('MediaClient'),
                         'options' => []
                     ]
                 ],
@@ -158,7 +158,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => UserRepository::class,
                     'arguments' => [
-                        'client' => \srvArg('AccountClient'),
+                        'client' => \mr_srv_arg('AccountClient'),
                         'options' => []
                     ]
                 ],
@@ -166,7 +166,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => VendorRepository::class,
                     'arguments' => [
-                        'client' => \srvArg('AccountClient'),
+                        'client' => \mr_srv_arg('AccountClient'),
                         'options' => []
                     ]
                 ],
@@ -174,7 +174,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => OAuthTokenRepository::class,
                     'arguments' => [
-                        'client' => \srvArg('AccountClient'),
+                        'client' => \mr_srv_arg('AccountClient'),
                         'options' => []
                     ]
                 ],
@@ -183,7 +183,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => true,
                     'class' => Media::class,
                     'arguments' => [
-                        'repository' => \srvArg(UserRepository::class),
+                        'repository' => \mr_srv_arg(UserRepository::class),
                         'data' => null
                     ]
                 ],
@@ -191,7 +191,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => false,
                     'class' => User::class,
                     'arguments' => [
-                        'repository' => \srvArg(UserRepository::class),
+                        'repository' => \mr_srv_arg(UserRepository::class),
                         'data' => null
                     ]
                 ],
@@ -199,7 +199,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => false,
                     'class' => Vendor::class,
                     'arguments' => [
-                        'repository' => \srvArg(VendorRepository::class),
+                        'repository' => \mr_srv_arg(VendorRepository::class),
                         'data' => null
                     ]
                 ],
@@ -207,7 +207,7 @@ class Sdk implements ContainerAccessorInterface
                     'single' => false,
                     'class' => OAuthToken::class,
                     'arguments' => [
-                        'repository' => \srvArg(OAuthTokenRepository::class),
+                        'repository' => \mr_srv_arg(OAuthTokenRepository::class),
                         'data' => null
                     ]
                 ]
@@ -236,7 +236,7 @@ class Sdk implements ContainerAccessorInterface
         } catch (RequestException $ex) {
             // Just avoid request exception from propagating
             if ($this->isDebug()) {
-                \logger()->error($ex->getMessage());
+                \mr_logger()->error($ex->getMessage());
             }
         }
 
@@ -281,7 +281,7 @@ class Sdk implements ContainerAccessorInterface
         } catch (RequestException $ex) {
             // Just avoid request exception from propagating
             if ($this->isDebug()) {
-                \logger()->error($ex->getMessage());
+                \mr_logger()->error($ex->getMessage());
             }
         }
 
