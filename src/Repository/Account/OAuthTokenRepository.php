@@ -16,10 +16,6 @@ class OAuthTokenRepository extends BaseRepository
 
     public function getByProvider($provider, $asArray = false)
     {
-        $data = $this->client->getData($this->getUri(null, ['provider', $provider]));
-
-        $data = $this->parseOne($data);
-
-        return $asArray ? $data : $this->create($data);
+        return $this->one([['provider', $provider]], $asArray);
     }
 }
