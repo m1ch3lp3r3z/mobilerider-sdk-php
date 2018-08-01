@@ -25,8 +25,10 @@ class OAuthTokenRepository extends BaseRepository
             return null;
         }
 
+        $data = $this->parseMany($data);
+
         $data = $data[0];
 
-        return $this->create($this->parseOne($data));
+        return $this->create($data);
     }
 }
