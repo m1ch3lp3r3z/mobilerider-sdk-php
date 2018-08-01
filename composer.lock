@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "b4e2ffb457f37d629a6ec9b72fd0d9c85f3dfe2c"
+                "reference": "572593ad627db27b10e887527da24b9a97bb0fee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b4e2ffb457f37d629a6ec9b72fd0d9c85f3dfe2c",
-                "reference": "b4e2ffb457f37d629a6ec9b72fd0d9c85f3dfe2c",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/572593ad627db27b10e887527da24b9a97bb0fee",
+                "reference": "572593ad627db27b10e887527da24b9a97bb0fee",
                 "shasum": ""
             },
             "require": {
@@ -69,7 +69,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-06-14T22:09:16+00:00"
+            "time": "2018-07-31T13:28:13+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -128,12 +128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "58f6e264ef0e4107c8b3d15a9c2e653b2bce0b4d"
+                "reference": "4b981cdeb8c13d22a6c193554f8c686f53d5c958"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/58f6e264ef0e4107c8b3d15a9c2e653b2bce0b4d",
-                "reference": "58f6e264ef0e4107c8b3d15a9c2e653b2bce0b4d",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/4b981cdeb8c13d22a6c193554f8c686f53d5c958",
+                "reference": "4b981cdeb8c13d22a6c193554f8c686f53d5c958",
                 "shasum": ""
             },
             "require": {
@@ -145,7 +145,7 @@
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
             },
             "type": "library",
             "extra": {
@@ -186,7 +186,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2018-06-08T08:55:26+00:00"
+            "time": "2018-07-29T08:09:46+00:00"
         },
         {
             "name": "m1ch3lp3r3z/laravel-helpers",
@@ -194,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/m1ch3lp3r3z/laravel-helpers.git",
-                "reference": "807b572a24fd000cb32785f01042503a99ebcd51"
+                "reference": "d2a58e9bb683dbd3633192e8919a7e911b84b768"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/m1ch3lp3r3z/laravel-helpers/zipball/807b572a24fd000cb32785f01042503a99ebcd51",
-                "reference": "807b572a24fd000cb32785f01042503a99ebcd51",
+                "url": "https://api.github.com/repos/m1ch3lp3r3z/laravel-helpers/zipball/d2a58e9bb683dbd3633192e8919a7e911b84b768",
+                "reference": "d2a58e9bb683dbd3633192e8919a7e911b84b768",
                 "shasum": ""
             },
             "require": {
@@ -228,7 +228,7 @@
             "support": {
                 "source": "https://github.com/m1ch3lp3r3z/laravel-helpers/tree/master"
             },
-            "time": "2018-06-21T21:44:34+00:00"
+            "time": "2018-07-30T19:56:44+00:00"
         },
         {
             "name": "mobilerider/mobilerider-php-bootstrap",
@@ -236,12 +236,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mobilerider/mobilerider-php-bootstrap.git",
-                "reference": "dd28d4f63071a8621ee44cc847db00436ecbf513"
+                "reference": "1dae1c294329d72d517cc2afdaf074804abd638b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mobilerider/mobilerider-php-bootstrap/zipball/dd28d4f63071a8621ee44cc847db00436ecbf513",
-                "reference": "dd28d4f63071a8621ee44cc847db00436ecbf513",
+                "url": "https://api.github.com/repos/mobilerider/mobilerider-php-bootstrap/zipball/1dae1c294329d72d517cc2afdaf074804abd638b",
+                "reference": "1dae1c294329d72d517cc2afdaf074804abd638b",
                 "shasum": ""
             },
             "require": {
@@ -287,7 +287,7 @@
                 "source": "https://github.com/mobilerider/mobilerider-php-bootstrap/tree/master",
                 "issues": "https://github.com/mobilerider/mobilerider-php-bootstrap/issues"
             },
-            "time": "2018-06-21T22:00:28+00:00"
+            "time": "2018-08-01T07:13:53+00:00"
         },
         {
             "name": "psr/http-message",
@@ -533,16 +533,16 @@
         },
         {
             "name": "phar-io/manifest",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phar-io/manifest.git",
-                "reference": "014feadb268809af7c8e2f7ccd396b8494901f58"
+                "reference": "2df402786ab5368a0169091f61a7c1e0eb6852d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/manifest/zipball/014feadb268809af7c8e2f7ccd396b8494901f58",
-                "reference": "014feadb268809af7c8e2f7ccd396b8494901f58",
+                "url": "https://api.github.com/repos/phar-io/manifest/zipball/2df402786ab5368a0169091f61a7c1e0eb6852d0",
+                "reference": "2df402786ab5368a0169091f61a7c1e0eb6852d0",
                 "shasum": ""
             },
             "require": {
@@ -584,7 +584,7 @@
                 }
             ],
             "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
-            "time": "2017-04-07T07:07:10+00:00"
+            "time": "2017-03-05T18:14:27+00:00"
         },
         {
             "name": "phar-io/version",
@@ -791,12 +791,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "6471ce6aa91ec03e9fdf3ca188e277104d8a7d1c"
+                "reference": "dbfc2600dee41b0ca3786f274bc1287d85d1c8bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/6471ce6aa91ec03e9fdf3ca188e277104d8a7d1c",
-                "reference": "6471ce6aa91ec03e9fdf3ca188e277104d8a7d1c",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/dbfc2600dee41b0ca3786f274bc1287d85d1c8bf",
+                "reference": "dbfc2600dee41b0ca3786f274bc1287d85d1c8bf",
                 "shasum": ""
             },
             "require": {
@@ -846,7 +846,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2018-05-09T14:00:54+00:00"
+            "time": "2018-07-31T07:47:46+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1103,12 +1103,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "d0dd8ce9d5ab922d80d7e3a758601ae587533bdc"
+                "reference": "2d53bd5ae8ec6f81bb3be9d397f1f4cfac69ff97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d0dd8ce9d5ab922d80d7e3a758601ae587533bdc",
-                "reference": "d0dd8ce9d5ab922d80d7e3a758601ae587533bdc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2d53bd5ae8ec6f81bb3be9d397f1f4cfac69ff97",
+                "reference": "2d53bd5ae8ec6f81bb3be9d397f1f4cfac69ff97",
                 "shasum": ""
             },
             "require": {
@@ -1126,7 +1126,7 @@
                 "phpunit/php-file-iterator": "^1.4.3",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^1.0.9",
-                "phpunit/phpunit-mock-objects": "^5.0.5",
+                "phpunit/phpunit-mock-objects": "^5.0.8",
                 "sebastian/comparator": "^2.1",
                 "sebastian/diff": "^2.0",
                 "sebastian/environment": "^3.1",
@@ -1179,7 +1179,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-06-18T16:54:44+00:00"
+            "time": "2018-07-19T06:58:00+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1187,12 +1187,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "3eaf040f20154d27d6da59ca2c6e28ac8fd56dce"
+                "reference": "6f9a3c8bf34188a2b53ce2ae7a126089c53e0a9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/3eaf040f20154d27d6da59ca2c6e28ac8fd56dce",
-                "reference": "3eaf040f20154d27d6da59ca2c6e28ac8fd56dce",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/6f9a3c8bf34188a2b53ce2ae7a126089c53e0a9f",
+                "reference": "6f9a3c8bf34188a2b53ce2ae7a126089c53e0a9f",
                 "shasum": ""
             },
             "require": {
@@ -1238,7 +1238,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2018-05-29T13:50:43+00:00"
+            "time": "2018-07-13T03:27:23+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1457,12 +1457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/exporter.git",
-                "reference": "20962714658cf74b1d293a98a30ec108e2e81ca9"
+                "reference": "c8c4f196e32858e4448bc285e542b61a4c40d9dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/20962714658cf74b1d293a98a30ec108e2e81ca9",
-                "reference": "20962714658cf74b1d293a98a30ec108e2e81ca9",
+                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/c8c4f196e32858e4448bc285e542b61a4c40d9dc",
+                "reference": "c8c4f196e32858e4448bc285e542b61a4c40d9dc",
                 "shasum": ""
             },
             "require": {
@@ -1516,7 +1516,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2018-05-15T05:51:07+00:00"
+            "time": "2018-06-28T14:22:04+00:00"
         },
         {
             "name": "sebastian/global-state",
