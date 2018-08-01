@@ -34,8 +34,6 @@ use Mr\Sdk\Service\AccountService;
  */
 class Sdk implements ContainerAccessorInterface
 {
-    const ACCOUNT_VERSION = 'v1';
-
     use ContainerAccessor;
 
     private static $instance;
@@ -140,9 +138,7 @@ class Sdk implements ContainerAccessorInterface
                     'class' => AccountService::class,
                     'arguments' => [
                         'client' => \mr_srv_arg('AccountClient'),
-                        'options' => [
-                            'version' => self::ACCOUNT_VERSION
-                        ]
+                        'options' => []
                     ]
                 ],
                 // Repositories
@@ -224,11 +220,10 @@ class Sdk implements ContainerAccessorInterface
     protected function authenticate()
     {
         $client = new Client($this->httpOptions['account']);
-        $version = self::ACCOUNT_VERSION;
         $data = null;
 
         try {
-            $data = $client->postData("{$version}/users/authenticate", [
+            $data = $client->postData("users/authenticate", [
                 'vendor_uuid' => $this->accountId,
                 'username' => $this->appId,
                 'password' => $this->appSecret
@@ -273,11 +268,10 @@ class Sdk implements ContainerAccessorInterface
             ]);
 
         $client = new Client($httpOptions);
-        $version = self::ACCOUNT_VERSION;
         $data = null;
 
         try {
-            $data = $client->postData("{$version}/users/$userId/impersonate", []);
+            $data = $client->postData("users/$userId/impersonate", []);
         } catch (RequestException $ex) {
             // Just avoid request exception from propagating
             if ($this->isDebug()) {
