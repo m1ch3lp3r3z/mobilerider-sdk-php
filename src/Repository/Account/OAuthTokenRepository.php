@@ -17,18 +17,16 @@ class OAuthTokenRepository extends BaseRepository
     public function getByProvider($provider, $liveMode = true)
     {
         $data = $this->client->getData(
-            $this->getUri(null, ['provider', $provider]),
-            ['live_mode' => intval($liveMode)]
+            $this->getUri(null, "provider/$provider"),
+            [
+                'live_mode' => intval($liveMode)
+            ]
         );
 
         if (! $data) {
             return null;
         }
-
-        $data = $this->parseMany($data);
-
-        $data = $data[0];
-
-        return $this->create($data);
+        
+        return $this->create($this->parseOne($data));
     }
 }
