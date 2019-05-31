@@ -9,6 +9,7 @@ use Mr\Sdk\Model\Account\Vendor;
 use Mr\Sdk\Repository\Account\OAuthTokenRepository;
 use Mr\Sdk\Repository\Account\UserRepository;
 use Mr\Sdk\Repository\Account\VendorRepository;
+use Mr\Sdk\Repository\Account\CredentialRepository;
 
 class AccountService extends BaseHttpService
 {
@@ -110,5 +111,16 @@ class AccountService extends BaseHttpService
     public function getOAuthTokenByProvider($provider, $liveMode = true)
     {
         return $this->getRepository(OAuthTokenRepository::class)->getByProvider($provider, $liveMode);
+    }
+
+    /**
+     * Returns credential by id
+     *
+     * @param $id
+     * @return Vendor
+     */
+    public function getCredential($id)
+    {
+        return $this->getRepository(CredentialRepository::class)->get($id);
     }
 }

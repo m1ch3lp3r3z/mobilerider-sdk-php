@@ -24,6 +24,8 @@ use Mr\Sdk\Repository\Account\VendorRepository;
 use Mr\Sdk\Repository\Media\MediaRepository;
 use Mr\Sdk\Service\MediaService;
 use Mr\Sdk\Service\AccountService;
+use Mr\Sdk\Repository\Account\CredentialRepository;
+use Mr\Sdk\Model\Account\Credential;
 
 /**
  * @method static MediaService getMediaService
@@ -174,6 +176,14 @@ class Sdk implements ContainerAccessorInterface
                         'options' => []
                     ]
                 ],
+                CredentialRepository::class => [
+                    'single' => true,
+                    'class' => CredentialRepository::class,
+                    'arguments' => [
+                        'client' => \mr_srv_arg('AccountClient'),
+                        'options' => []
+                    ]
+                ],
                 // Models
                 Media::class => [
                     'single' => true,
@@ -206,7 +216,15 @@ class Sdk implements ContainerAccessorInterface
                         'repository' => \mr_srv_arg(OAuthTokenRepository::class),
                         'data' => null
                     ]
-                ]
+                ],
+                Credential::class => [
+                    'single' => false,
+                    'class' => Credential::class,
+                    'arguments' => [
+                        'repository' => \mr_srv_arg(CredentialRepository::class),
+                        'data' => null
+                    ]
+                ],
             ];
 
         $this->container = new Container($definitions);
