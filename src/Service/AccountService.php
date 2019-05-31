@@ -123,4 +123,13 @@ class AccountService extends BaseHttpService
     {
         return $this->getRepository(CredentialRepository::class)->get($id);
     }
+
+    /**
+     * @param array $data
+     * @return Vendor
+     */
+    public function createCredential(array $data = [])
+    {
+        return $this->getRepository(CredentialRepository::class)->create($data);
+    }
 }
