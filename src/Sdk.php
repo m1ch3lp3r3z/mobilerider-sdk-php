@@ -28,6 +28,7 @@ use Mr\Sdk\Repository\Account\CredentialRepository;
 use Mr\Sdk\Model\Account\Credential;
 
 /**
+ * @method static string getToken
  * @method static MediaService getMediaService
  * @method static AccountService getAccountService
  *
@@ -349,6 +350,11 @@ class Sdk implements ContainerAccessorInterface
         $name = '_' . $name;
 
         return call_user_func_array([$instance, $name], $arguments);
+    }
+
+    protected function _getToken()
+    {
+        return $this->token;
     }
 
     /**
