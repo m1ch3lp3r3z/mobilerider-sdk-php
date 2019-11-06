@@ -24,13 +24,17 @@ use Mr\Sdk\Repository\Account\VendorRepository;
 use Mr\Sdk\Repository\Media\MediaRepository;
 use Mr\Sdk\Service\MediaService;
 use Mr\Sdk\Service\AccountService;
+use Mr\Sdk\Service\StorageService;
 use Mr\Sdk\Repository\Account\CredentialRepository;
 use Mr\Sdk\Model\Account\Credential;
+use Mr\Sdk\Model\Storage\FtpFile;
+use Mr\Sdk\Repository\Storage\FtpFileRepository;
 
 /**
  * @method static string getToken
  * @method static MediaService getMediaService
  * @method static AccountService getAccountService
+ * @method static StorageService getStorageService
  *
  * Class Sdk
  * @package Mr\Sdk
@@ -85,6 +89,13 @@ class Sdk implements ContainerAccessorInterface
                 ],
                 $httpOptions['media'] ?? []
             ),
+            'storage' => array_merge(
+                [
+                    'base_uri' => 'https://storage-sls.mobilerider.com/api/',
+                    'headers' => $this->defaultHeaders
+                ],
+                $httpOptions['storage'] ?? []
+            ),
         ];
 
         if ((!$accountId || !$appId || !$appSecret) && !$token) {
@@ -128,6 +139,13 @@ class Sdk implements ContainerAccessorInterface
                         'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['account'])
                     ]
                 ],
+                'StorageClient' => [
+                    'single' => true,
+                    'class' => Client::class,
+                    'arguments' => [
+                        'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['storage'])
+                    ]
+                ],
                 // Services
                 MediaService::class => [
                     'single' => true,
@@ -141,6 +159,14 @@ class Sdk implements ContainerAccessorInterface
                     'class' => AccountService::class,
                     'arguments' => [
                         'client' => \mr_srv_arg('AccountClient'),
+                        'options' => []
+                    ]
+                ],
+                StorageService::class => [
+                    'single' => true,
+                    'class' => StorageService::class,
+                    'arguments' => [
+                        'client' => \mr_srv_arg('StorageClient'),
                         'options' => []
                     ]
                 ],
@@ -185,6 +211,14 @@ class Sdk implements ContainerAccessorInterface
                         'options' => []
                     ]
                 ],
+                FtpFileRepository::class => [
+                    'single' => true,
+                    'class' => FtpFileRepository::class,
+                    'arguments' => [
+                        'client' => \mr_srv_arg('StorageClient'),
+                        'options' => []
+                    ]
+                ],
                 // Models
                 Media::class => [
                     'single' => true,
@@ -223,6 +257,14 @@ class Sdk implements ContainerAccessorInterface
                     'class' => Credential::class,
                     'arguments' => [
                         'repository' => \mr_srv_arg(CredentialRepository::class),
+                        'data' => null
+                    ]
+                ],
+                FtpFile::class => [
+                    'single' => false,
+                    'class' => FtpFile::class,
+                    'arguments' => [
+                        'repository' => \mr_srv_arg(FtpFileRepository::class),
                         'data' => null
                     ]
                 ],
@@ -372,5 +414,13 @@ class Sdk implements ContainerAccessorInterface
     protected function _getAccountService()
     {
         return $this->_get(AccountService::class);
+    }
+
+    /**
+     * @return StorageService
+     */
+    protected function _getStorageService()
+    {
+        return $this->_get(StorageService::class);
     }
 }
