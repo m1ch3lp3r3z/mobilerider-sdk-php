@@ -9,11 +9,11 @@ use Mr\Sdk\Repository\Storage\FtpFileRepository;
 class StorageService extends BaseHttpService
 {
     /**
-     * Returns files
+     * Returns list of ftp files
      *
      * @return FtpFile[]
      */
-    public function findFiles(array $filters = [])
+    public function findFtpFiles(array $filters = [])
     {
         return $this->getRepository(FtpFileRepository::class)->all($filters);
     }
