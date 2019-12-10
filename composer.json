@@ -2,7 +2,7 @@
     "name": "mobilerider/mobilerider-php-sdk",
     "type": "library",
     "description": "PHP SDK for MobileRider APIs",
-    "version": "0.1.0-beta.24",
+    "version": "0.1.0-beta.25",
     "keywords": ["mobilerider", "api", "live", "stream", "media"],
     "license": "MIT",
     "authors": [

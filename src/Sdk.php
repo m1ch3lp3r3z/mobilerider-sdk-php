@@ -74,12 +74,18 @@ class Sdk implements ContainerAccessorInterface
         $this->appSecret = $appSecret;
         $this->token = $token;
         $this->options = $options;
+
+        $httpCommon = [
+            "debug" => $this->options["debug"] ?? false
+        ];
+
         $this->httpOptions = [
             'account' => array_merge(
                 [
                     'base_uri' => 'https://accounts.mobilerider.com/api/',
                     'headers' => $this->defaultHeaders
                 ],
+                $httpCommon,
                 $httpOptions['account'] ?? []
             ),
             'media' => array_merge(
@@ -87,6 +93,7 @@ class Sdk implements ContainerAccessorInterface
                     'base_uri' => 'https://api.mobilerider.com/api/',
                     'headers' => $this->defaultHeaders
                 ],
+                $httpCommon,
                 $httpOptions['media'] ?? []
             ),
             'storage' => array_merge(
@@ -94,6 +101,7 @@ class Sdk implements ContainerAccessorInterface
                     'base_uri' => 'https://storage-sls.mobilerider.com/api/',
                     'headers' => $this->defaultHeaders
                 ],
+                $httpCommon,
                 $httpOptions['storage'] ?? []
             ),
         ];
