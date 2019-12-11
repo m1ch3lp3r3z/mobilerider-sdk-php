@@ -82,7 +82,7 @@ class Sdk implements ContainerAccessorInterface
         $this->httpOptions = [
             'account' => array_merge(
                 [
-                    'base_uri' => 'https://accounts.mobilerider.com/api/',
+                    'base_uri' => 'https://accounts.mobilerider.com/api/v1/',
                     'headers' => $this->defaultHeaders
                 ],
                 $httpCommon,
@@ -98,7 +98,7 @@ class Sdk implements ContainerAccessorInterface
             ),
             'storage' => array_merge(
                 [
-                    'base_uri' => 'https://storage-sls.mobilerider.com/api/',
+                    'base_uri' => 'https://storage-sls.mobilerider.com/api/v1/',
                     'headers' => $this->defaultHeaders
                 ],
                 $httpCommon,
