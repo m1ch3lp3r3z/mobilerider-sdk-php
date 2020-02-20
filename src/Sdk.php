@@ -229,7 +229,7 @@ class Sdk implements ContainerAccessorInterface
                 ],
                 // Models
                 Media::class => [
-                    'single' => true,
+                    'single' => false,
                     'class' => Media::class,
                     'arguments' => [
                         'repository' => \mr_srv_arg(UserRepository::class),
