@@ -29,12 +29,14 @@ use Mr\Sdk\Repository\Account\CredentialRepository;
 use Mr\Sdk\Model\Account\Credential;
 use Mr\Sdk\Model\Storage\FtpFile;
 use Mr\Sdk\Repository\Storage\FtpFileRepository;
+use Mr\Sdk\Service\ViewerService;
 
 /**
  * @method static string getToken
  * @method static MediaService getMediaService
  * @method static AccountService getAccountService
  * @method static StorageService getStorageService
+ * @method static ViewerService getViewerService
  *
  * Class Sdk
  * @package Mr\Sdk
@@ -104,6 +106,14 @@ class Sdk implements ContainerAccessorInterface
                 $httpCommon,
                 $httpOptions['storage'] ?? []
             ),
+            'viewer' => array_merge(
+                [
+                    'base_uri' => 'https://viewer-sls.mobilerider.com/api/v1/',
+                    'headers' => $this->defaultHeaders
+                ],
+                $httpCommon,
+                $httpOptions['viewer'] ?? []
+            )
         ];
 
         if ((!$accountId || !$appId || !$appSecret) && !$token) {
@@ -154,6 +164,13 @@ class Sdk implements ContainerAccessorInterface
                         'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['storage'])
                     ]
                 ],
+                'ViewerClient' => [
+                    'single' => true,
+                    'class' => Client::class,
+                    'arguments' => [
+                        'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['viewer'])
+                    ]
+                ],
                 // Services
                 MediaService::class => [
                     'single' => true,
@@ -175,6 +192,14 @@ class Sdk implements ContainerAccessorInterface
                     'class' => StorageService::class,
                     'arguments' => [
                         'client' => \mr_srv_arg('StorageClient'),
+                        'options' => []
+                    ]
+                ],
+                ViewerService::class => [
+                    'single' => true,
+                    'class' => ViewerService::class,
+                    'arguments' => [
+                        'client' => \mr_srv_arg('ViewerClient'),
                         'options' => []
                     ]
                 ],
@@ -430,5 +455,13 @@ class Sdk implements ContainerAccessorInterface
     protected function _getStorageService()
     {
         return $this->_get(StorageService::class);
+    }
+
+    /**
+     * @return ViewerService
+     */
+    protected function _getViewerService()
+    {
+        return $this->_get(ViewerService::class);
     }
 }
