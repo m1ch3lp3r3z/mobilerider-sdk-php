@@ -447,6 +447,11 @@ class Sdk implements ContainerAccessorInterface
         return self::$instance;
     }
 
+    public static function isAuthenticated()
+    {
+        return (bool) self::$instance;
+    }
+
     public static function __callStatic($name, $arguments)
     {
         $instance = self::getInstance();
