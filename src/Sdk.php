@@ -460,6 +460,11 @@ class Sdk implements ContainerAccessorInterface
         return call_user_func_array([$instance, $name], $arguments);
     }
 
+    protected function _getAccountId()
+    {
+        return $this->accountId;
+    }
+
     protected function _getToken()
     {
         return $this->token;
