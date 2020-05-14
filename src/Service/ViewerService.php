@@ -29,6 +29,21 @@ class ViewerService extends BaseHttpService
         return isset($data["success"]) && $data["success"] == 1;
     }
 
+    public function endSession()
+    {
+        try {
+            $response = $this->client->delete('sessions');
+        } catch (RequestException $ex) {
+            return false;
+        }
+
+        if ($response->getStatusCode() != 200) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Returns viewer by external identifier. 
      * If it doesn't exist it is created
