@@ -370,11 +370,6 @@ class Sdk implements ContainerAccessorInterface
         return $this->token = $data['data']['token'];
     }
 
-    public function getAccountId()
-    {
-        return $this->accountId;
-    }
-
     /**
      * @return array
      */
