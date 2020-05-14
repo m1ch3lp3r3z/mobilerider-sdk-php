@@ -39,6 +39,7 @@ use Mr\Sdk\Repository\Viewer\ViewerRepository;
  * @method static AccountService getAccountService
  * @method static StorageService getStorageService
  * @method static ViewerService getViewerService
+ * @method static string getAccountId
  *
  * Class Sdk
  * @package Mr\Sdk
