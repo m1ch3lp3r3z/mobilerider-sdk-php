@@ -30,6 +30,8 @@ use Mr\Sdk\Model\Account\Credential;
 use Mr\Sdk\Model\Storage\FtpFile;
 use Mr\Sdk\Repository\Storage\FtpFileRepository;
 use Mr\Sdk\Service\ViewerService;
+use Mr\Sdk\Model\Viewer\Viewer;
+use Mr\Sdk\Repository\Viewer\ViewerRepository;
 
 /**
  * @method static string getToken
@@ -89,6 +91,14 @@ class Sdk implements ContainerAccessorInterface
                 ],
                 $httpCommon,
                 $httpOptions['account'] ?? []
+            ),
+            'account-sls' => array_merge(
+                [
+                    'base_uri' => 'https://accounts-sls.mobilerider.com/api/v1/',
+                    'headers' => $this->defaultHeaders
+                ],
+                $httpCommon,
+                $httpOptions['account-sls'] ?? []
             ),
             'media' => array_merge(
                 [
@@ -155,6 +165,13 @@ class Sdk implements ContainerAccessorInterface
                     'class' => Client::class,
                     'arguments' => [
                         'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['account'])
+                    ]
+                ],
+                'AccountSlsClient' => [
+                    'single' => true,
+                    'class' => Client::class,
+                    'arguments' => [
+                        'options' => array_merge($httpDefaultRuntimeOptions, $this->httpOptions['account-sls'])
                     ]
                 ],
                 'StorageClient' => [
@@ -252,6 +269,14 @@ class Sdk implements ContainerAccessorInterface
                         'options' => []
                     ]
                 ],
+                ViewerRepository::class => [
+                    'single' => true,
+                    'class' => ViewerRepository::class,
+                    'arguments' => [
+                        'client' => \mr_srv_arg('ViewerClient'),
+                        'options' => []
+                    ]
+                ],
                 // Models
                 Media::class => [
                     'single' => false,
@@ -298,6 +323,14 @@ class Sdk implements ContainerAccessorInterface
                     'class' => FtpFile::class,
                     'arguments' => [
                         'repository' => \mr_srv_arg(FtpFileRepository::class),
+                        'data' => null
+                    ]
+                ],
+                Viewer::class => [
+                    'single' => false,
+                    'class' => Viewer::class,
+                    'arguments' => [
+                        'repository' => \mr_srv_arg(ViewerRepository::class),
                         'data' => null
                     ]
                 ],

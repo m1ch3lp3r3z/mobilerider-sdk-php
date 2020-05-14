@@ -6,6 +6,7 @@ use Mr\Bootstrap\Service\BaseHttpService;
 use Mr\Sdk\Model\Account\OAuthToken;
 use Mr\Sdk\Model\Account\User;
 use Mr\Sdk\Model\Account\Vendor;
+use Mr\Sdk\Model\Viewer\Viewer;
 use Mr\Sdk\Repository\Account\OAuthTokenRepository;
 use Mr\Sdk\Repository\Account\UserRepository;
 use Mr\Sdk\Repository\Account\VendorRepository;
@@ -131,5 +132,14 @@ class AccountService extends BaseHttpService
     public function createCredential(array $data = [])
     {
         return $this->getRepository(CredentialRepository::class)->create($data);
+    }
+
+    public function authViewer(Viewer $viewer)
+    {
+        $data = $this->_get('AccountSlsClient')->postData('auth/viewer', [
+            "viewer_id" => $viewer->id()
+        ]);
+
+        return $data["token"] ?? null;
     }
 }

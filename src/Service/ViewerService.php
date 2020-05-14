@@ -5,8 +5,8 @@ namespace Mr\Sdk\Service;
 use GuzzleHttp\Exception\RequestException;
 use Mr\Bootstrap\Data\JsonEncoder;
 use Mr\Bootstrap\Service\BaseHttpService;
-use Mr\Sdk\Model\Storage\FtpFile;
-use Mr\Sdk\Repository\Storage\FtpFileRepository;
+use Mr\Sdk\Repository\Viewer\ViewerRepository;
+use Mr\Sdk\Model\Viewer\Viewer;
 
 class ViewerService extends BaseHttpService
 {
@@ -27,5 +27,17 @@ class ViewerService extends BaseHttpService
         $data = (new JsonEncoder())->decode($contents);
 
         return isset($data["success"]) && $data["success"] == 1;
+    }
+
+    /**
+     * Returns viewer by external identifier. 
+     * If it doesn't exist it is created
+     *
+     * @param $id
+     * @return Viewer
+     */
+    public function getViewerByOriginalId($id)
+    {
+        return $this->getRepository(ViewerRepository::class)->getByOriginalId($id);
     }
 }
