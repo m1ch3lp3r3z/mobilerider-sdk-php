@@ -14,7 +14,7 @@ class ViewerService extends BaseHttpService
     {
         try {
             $response = $this->client->get('verify');
-        } catch (RequestException $ex) {mr_dd($ex->getMessage());
+        } catch (RequestException $ex) {
             return false;
         }
 
