@@ -132,7 +132,11 @@ class Sdk implements ContainerAccessorInterface
         }
 
         if (!$token) {
-            $this->authenticate();
+            if (isset($options['vendor_auth']) && $options['vendor_auth'] === true) {
+                $this->authenticateVendor();
+            } else {
+                $this->authenticate();
+            }
         }
 
         // Create default handler with all the default middlewares
@@ -345,9 +349,41 @@ class Sdk implements ContainerAccessorInterface
         return $this->options['debug'] ?? false;
     }
 
+    protected function authenticateVendor()
+    {
+        $httpOptions = $this->httpOptions['account-sls'];
+
+        $client = new Client($httpOptions);
+        $data = null;
+
+        try {
+            $data = $client->postData("auth/vendor", [
+                'username' => $this->appId,
+                'password' => $this->appSecret
+            ]);
+        } catch (RequestException $ex) {
+            // Just avoid request exception from propagating
+            if ($this->isDebug()) {
+                \mr_logger()->error($ex->getMessage());
+            }
+        }
+
+        if (! isset($data, $data['token'])) {
+            throw new InvalidCredentialsException();
+        }
+
+        return $this->token = $data['token'];
+    }
+
     protected function authenticate()
     {
-        $client = new Client($this->httpOptions['account']);
+        if (isset($this->options['sls_auth']) && $this->options['sls_auth'] === true) {
+            $httpOptions = $this->httpOptions['account-sls'];
+        } else {
+            $httpOptions = $this->httpOptions['account'];
+        }
+
+        $client = new Client($httpOptions);
         $data = null;
 
         try {
@@ -427,6 +463,13 @@ class Sdk implements ContainerAccessorInterface
 
     public static function setCredentials($accountId, $appId, $appSecret, array $options = [], array $httpOptions = [])
     {
+        self::create($accountId, $appId, $appSecret, null, $options, $httpOptions);
+    }
+
+    public static function setVendorCredentials($accountId, $appId, $appSecret, array $options = [], array $httpOptions = [])
+    {
+        $options['vendor_auth'] = true;
+
         self::create($accountId, $appId, $appSecret, null, $options, $httpOptions);
     }
 
