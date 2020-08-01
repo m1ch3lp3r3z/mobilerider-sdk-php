@@ -29,7 +29,7 @@ class MediaRepository extends BaseRepository
     {
         $metadata = $data['meta'];
 
-        return $data['object'];
+        return $data['object'] ?? $data["objects"]; // POST will return `objects`
     }
 
     public function parseMany(array $data, array &$metadata = [])
