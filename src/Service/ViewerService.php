@@ -44,6 +44,11 @@ class ViewerService extends BaseHttpService
         return true;
     }
 
+    public function getViewer($id)
+    {
+        return $this->getRepository(ViewerRepository::class)->get($id);
+    }
+
     /**
      * Returns viewer by external identifier. 
      * If it doesn't exist it is created
