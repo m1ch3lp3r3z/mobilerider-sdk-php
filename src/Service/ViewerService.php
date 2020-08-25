@@ -44,6 +44,17 @@ class ViewerService extends BaseHttpService
         return true;
     }
 
+    /**
+     * Create new viewer instance. Does not persist viewer.
+     *
+     * @param array $data
+     * @return Viewer
+     */
+    public function createViewer(array $data = [])
+    {
+        return $this->getRepository(ViewerRepository::class)->create($data);
+    }
+
     public function getViewer($id)
     {
         return $this->getRepository(ViewerRepository::class)->get($id);
